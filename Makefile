@@ -123,6 +123,17 @@ CFLAGS=$(CFLAGS_$(COMPILER)) $(OMP) $(I3E) $(C_OPTIONS) -c
 MPI_COMPILER=mpif90
 C_MPI_COMPILER=mpicc
 
+# extra lines I added:
+
+INCLUDE_PATH = /usr/local/include/legio
+LIBRARY_PATH = /usr/local/lib/
+LIBRARY_NAME = legio
+MPI_LIB = mpi
+
+FLAGS += -L. -lmpi_wrapper -L$(LIBRARY_PATH) -I$(INCLUDE_PATH) -l$(LIBRARY_NAME) -l$(MPI_LIB) -lstdc++
+# CFLAGS += -L. -lmpi_wrapper -L$(LIBRARY_PATH) -I$(INCLUDE_PATH) -l$(LIBRARY_NAME) -l$(MPI_LIB) -lstdc++
+
+
 clover_leaf: c_lover *.f90 Makefile
 	$(MPI_COMPILER) $(FLAGS)	\
 	data.f90			\

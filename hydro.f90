@@ -190,21 +190,21 @@ SUBROUTINE hydro
 
         END IF
 
-        IF (parallel%boss) THEN
-            wall_clock=timer()-timerstart
-            step_clock=timer()-step_time
-            WRITE(g_out,*)"Wall clock ",wall_clock
-            WRITE(0    ,*)"Wall clock ",wall_clock
-            cells = grid%x_cells * grid%y_cells
-            rstep = step
-            grind_time   = wall_clock/(rstep * cells)
-            step_grind   = step_clock/cells
-            WRITE(0    ,*)"Average time per cell ",grind_time
-            WRITE(g_out,*)"Average time per cell ",grind_time
-            WRITE(0    ,*)"Step time per cell    ",step_grind
-            WRITE(g_out,*)"Step time per cell    ",step_grind
+        ! IF (parallel%boss) THEN
+        !     wall_clock=timer()-timerstart
+        !     step_clock=timer()-step_time
+        !     WRITE(g_out,*)"Wall clock ",wall_clock
+        !     WRITE(0    ,*)"Wall clock ",wall_clock
+        !     cells = grid%x_cells * grid%y_cells
+        !     rstep = step
+        !     grind_time   = wall_clock/(rstep * cells)
+        !     step_grind   = step_clock/cells
+        !     WRITE(0    ,*)"Average time per cell ",grind_time
+        !     WRITE(g_out,*)"Average time per cell ",grind_time
+        !     WRITE(0    ,*)"Step time per cell    ",step_grind
+        !     WRITE(g_out,*)"Step time per cell    ",step_grind
 
-        END IF
+        ! END IF
 
     END DO
 
