@@ -111,15 +111,12 @@ CONTAINS
     ! substituted this with my own function
     call my_MPI_Comm_rank(c_mpi_comm, rank, err)
     ! CALL MPI_COMM_RANK(MPI_COMM_WORLD,rank,err)
-    
-    ! just to check if legio is properly linked
-    ! call my_MPI_Barrier(c_mpi_comm, err)
 
-    if (rank == 2) then
-      call raise_sigint_c()
-    end if
+    ! if (rank == 2) then
+    !   call raise_sigint_c()
+    ! end if
 
-    CALL MPI_COMM_SIZE(MPI_COMM_WORLD,size,err)
+    CALL my_MPI_Comm_size(MPI_COMM_WORLD,size,err)
 
     parallel%parallel=.TRUE.
     parallel%task=rank
@@ -450,7 +447,8 @@ CONTAINS
     ENDIF
 
     !make a call to wait / sync
-    CALL MPI_WAITALL(message_count,request,status,err)
+    ! CALL MPI_WAITALL(message_count,request,status,err)
+    CALL my_MPI_Waitall(message_count,request,status,err)
 
     !unpack in left direction
     IF(chunk%chunk_neighbours(chunk_left).NE.external_face) THEN
@@ -513,7 +511,8 @@ CONTAINS
     ENDIF
 
     !need to make a call to wait / sync
-    CALL MPI_WAITALL(message_count,request,status,err)
+    ! CALL MPI_WAITALL(message_count,request,status,err)
+    CALL my_MPI_Waitall(message_count,request,status,err)
 
     !unpack in top direction
     IF( chunk%chunk_neighbours(chunk_top).NE.external_face ) THEN
@@ -928,14 +927,35 @@ CONTAINS
     INTEGER         :: left_task
     INTEGER         :: total_size, tag_send, tag_recv, err
     INTEGER         :: req_send, req_recv
+    ! i added
+    type(c_ptr) :: ptr_snd, ptr_rec
+    integer(c_int) :: c_mpi_comm_world
+
+    real, pointer :: tmp_ptr(:), tmp_ptr2(:)
+    allocate(tmp_ptr(size(left_snd_buffer)))  ! Allocate memory for temporary pointer
+    tmp_ptr(:) = left_snd_buffer(:)
+
+    allocate(tmp_ptr2(size(left_rcv_buffer)))  ! Allocate memory for temporary pointer
+    tmp_ptr2(:) = left_rcv_buffer(:)
+
+    c_mpi_comm_world = MPI_COMM_WORLD
 
     left_task =chunk%chunk_neighbours(chunk_left) - 1
 
     CALL MPI_ISEND(left_snd_buffer,total_size,MPI_DOUBLE_PRECISION,left_task,tag_send &
       ,MPI_COMM_WORLD,req_send,err)
 
+    ! ptr_snd = c_loc(tmp_ptr)
+    ! CALL my_MPI_Isend(c_loc(tmp_ptr) ,total_size,MPI_DOUBLE_PRECISION,left_task,tag_send &
+    !   ,c_mpi_comm_world,req_send,err)
+    ! left_snd_buffer(:) = tmp_ptr(:)
+
     CALL MPI_IRECV(left_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,left_task,tag_recv &
       ,MPI_COMM_WORLD,req_recv,err)
+    ! ptr_rec = c_loc(tmp_ptr2)
+    ! CALL my_MPI_Irecv(c_loc(tmp_ptr2),total_size,MPI_DOUBLE_PRECISION,left_task,tag_recv &
+    !   ,c_mpi_comm_world,req_recv,err)
+    ! left_rcv_buffer(:) = tmp_ptr2(:)
 
   END SUBROUTINE clover_send_recv_message_left
 
@@ -1711,14 +1731,36 @@ CONTAINS
     INTEGER      :: right_task
     INTEGER      :: total_size, tag_send, tag_recv, err
     INTEGER      :: req_send, req_recv
+     ! i added
+    type(c_ptr) :: ptr_snd, ptr_rec
+    integer(c_int) :: c_mpi_comm_world
+
+    real, pointer :: tmp_ptr(:), tmp_ptr2(:)
+    allocate(tmp_ptr(size(right_snd_buffer)))  ! Allocate memory for temporary pointer
+    tmp_ptr(:) = right_snd_buffer(:)
+
+    allocate(tmp_ptr2(size(right_rcv_buffer)))  ! Allocate memory for temporary pointer
+    tmp_ptr2(:) = right_rcv_buffer(:)
+
+    c_mpi_comm_world = MPI_COMM_WORLD
 
     right_task=chunk%chunk_neighbours(chunk_right) - 1
 
     CALL MPI_ISEND(right_snd_buffer,total_size,MPI_DOUBLE_PRECISION,right_task,tag_send, &
       MPI_COMM_WORLD,req_send,err)
 
+    ! ptr_snd = c_loc(tmp_ptr)
+    ! CALL my_MPI_ISEND(c_loc(tmp_ptr),total_size,MPI_DOUBLE_PRECISION,right_task,tag_send, &
+    !   MPI_COMM_WORLD,req_send,err)
+    ! right_snd_buffer(:) = tmp_ptr(:)
+
     CALL MPI_IRECV(right_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,right_task,tag_recv, &
       MPI_COMM_WORLD,req_recv,err)
+
+    ! ptr_rec = c_loc(tmp_ptr2)
+    ! CALL MPI_IRECV(c_loc(tmp_ptr2),total_size,MPI_DOUBLE_PRECISION,right_task,tag_recv, &
+    !   MPI_COMM_WORLD,req_recv,err)
+    ! right_rcv_buffer(:) = tmp_ptr2(:)
 
   END SUBROUTINE clover_send_recv_message_right
 
