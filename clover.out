@@ -1,1 +1,83 @@
 
+Clover Version    1.300
+       MPI Version
+   Task Count      4
+
+ Clover will run from the following input:-
+
+*clover                                                                                             
+                                                                                                    
+ state 1 density=0.2 energy=1.0                                                                     
+ state 2 density=1.0 energy=2.5 geometry=rectangle xmin=0.0 xmax=5.0 ymin=0.0 ymax=2.0              
+                                                                                                    
+ x_cells=960                                                                                        
+ y_cells=960                                                                                        
+                                                                                                    
+ xmin=0.0                                                                                           
+ ymin=0.0                                                                                           
+ xmax=10.0                                                                                          
+ ymax=10.0                                                                                          
+                                                                                                    
+ initial_timestep=0.04                                                                              
+ timestep_rise=1.5                                                                                  
+ max_timestep=0.04                                                                                  
+ end_step=87                                                                                        
+ test_problem 2                                                                                     
+*endclover                                                                                          
+
+ Initialising and generating
+
+ Reading input file
+
+ Reading specification for state            1
+
+            state density   0.2000E+00
+             state energy   0.1000E+01
+
+ Reading specification for state            2
+
+            state density   0.1000E+01
+             state energy   0.2500E+01
+ state geometry rectangular
+               state xmin   0.0000E+00
+               state xmax   0.5000E+01
+               state ymin   0.0000E+00
+               state ymax   0.2000E+01
+
+                   x_cells         960
+                   y_cells         960
+                      xmin  0.0000E+00
+                      ymin  0.0000E+00
+                      xmax  0.1000E+02
+                      ymax  0.1000E+02
+         initial_timestep   0.4000E-01
+             timestep_rise  0.1500E+01
+              max_timestep  0.4000E-01
+                  end_step          87
+              test_problem           2
+
+     Using Fortran Kernels
+
+ Input read finished.
+
+ Setting up initial geometry
+
+
+ Mesh ratio of    1.0000000000000000     
+ Decomposing the mesh into            2  by            2  chunks
+ Decomposing the chunk with            1  tiles
+
+ Generating chunks
+
+ Problem initialised and generated
+
+ Time    0.0000000000000000     
+                       Volume            Mass         Density        Pressure Internal Energy  Kinetic Energy    Total Energy
+ step:      0      0.2500E+02      0.1300E+02      0.5200E+00      0.4480E+00      0.2800E+02      0.0000E+00      0.2800E+02
+
+ Starting the calculation
+ Step       1 time   0.0000000 control    sound    timestep   6.16E-03       1,       1 x  5.21E-03 y  5.21E-03
+ Step       2 time   0.0061626 control    sound    timestep   5.28E-03       1,       1 x  5.21E-03 y  5.21E-03
+ Step       3 time   0.0114448 control    sound    timestep   4.83E-03       1,       1 x  5.21E-03 y  5.21E-03
+ Step       4 time   0.0162712 control    sound    timestep   5.05E-03       1,       1 x  5.21E-03 y  5.21E-03
+ Step       5 time   0.0213176 control    sound    timestep   5.44E-03       1,       1 x  5.21E-03 y  5.21E-03

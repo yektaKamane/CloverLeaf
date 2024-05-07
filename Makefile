@@ -136,6 +136,7 @@ FLAGS += -L. -lmpi_wrapper -L$(LIBRARY_PATH) -I$(INCLUDE_PATH) -l$(LIBRARY_NAME)
 
 clover_leaf: c_lover *.f90 Makefile
 	$(MPI_COMPILER) $(FLAGS)	\
+	mpi_interface.f90   \
 	data.f90			\
 	definitions.f90			\
 	pack_kernel.f90			\

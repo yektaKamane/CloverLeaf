@@ -35,29 +35,30 @@ MODULE clover_module
   USE definitions_module
   USE MPI
   USE iso_c_binding
+  USE mpi_interface
 
   IMPLICIT NONE
 
   ! I added this part
-  INTERFACE
+  ! INTERFACE
 
-  subroutine raise_sigint_c() bind(C, name="raise_sigint")
-  end subroutine raise_sigint_c
+  ! subroutine raise_sigint_c() bind(C, name="raise_sigint")
+  ! end subroutine raise_sigint_c
 
-  subroutine my_MPI_Comm_rank(Fcomm, rank, ierr) bind(C, name="my_MPI_Comm_rank")  
-    use iso_c_binding      
-    integer(c_int), value :: Fcomm
-    integer(c_int), intent(out) :: rank
-    integer(c_int), intent(out) :: ierr
-  end subroutine my_MPI_Comm_rank
+  ! subroutine my_MPI_Comm_rank(Fcomm, rank, ierr) bind(C, name="my_MPI_Comm_rank")  
+  !   use iso_c_binding      
+  !   integer(c_int), value :: Fcomm
+  !   integer(c_int), intent(out) :: rank
+  !   integer(c_int), intent(out) :: ierr
+  ! end subroutine my_MPI_Comm_rank
 
-  subroutine my_MPI_Barrier(Fcomm, ierr) bind(C, name="my_MPI_Barrier")
-    use iso_c_binding
-    integer(c_int), value :: Fcomm
-    integer(c_int), intent(out) :: ierr
-  end subroutine my_MPI_Barrier
+  ! subroutine my_MPI_Barrier(Fcomm, ierr) bind(C, name="my_MPI_Barrier")
+  !   use iso_c_binding
+  !   integer(c_int), value :: Fcomm
+  !   integer(c_int), intent(out) :: ierr
+  ! end subroutine my_MPI_Barrier
   
-  END INTERFACE
+  ! END INTERFACE
 
 CONTAINS
 
@@ -95,24 +96,28 @@ CONTAINS
 
     INTEGER :: err,rank,size
     integer(c_int) :: c_mpi_comm
+    integer(c_int) :: c_mpi_comm_slf
 
     rank=0
     size=1
 
     CALL MPI_INIT(err)
-    
-    c_mpi_comm = MPI_COMM_WORLD
 
+    ! I added
+    c_mpi_comm = MPI_COMM_WORLD
+    c_mpi_comm_slf = MPI_COMM_SELF
+    CALL my_MPI_Init(c_mpi_comm, c_mpi_comm_slf, err)
+    
     ! substituted this with my own function
     call my_MPI_Comm_rank(c_mpi_comm, rank, err)
     ! CALL MPI_COMM_RANK(MPI_COMM_WORLD,rank,err)
     
     ! just to check if legio is properly linked
-    call my_MPI_Barrier(c_mpi_comm, err)
+    ! call my_MPI_Barrier(c_mpi_comm, err)
 
-    ! if (rank == 2) then
-    !   call raise_sigint_c()
-    ! end if
+    if (rank == 2) then
+      call raise_sigint_c()
+    end if
 
     CALL MPI_COMM_SIZE(MPI_COMM_WORLD,size,err)
 
