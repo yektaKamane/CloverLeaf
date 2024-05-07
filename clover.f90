@@ -447,8 +447,8 @@ CONTAINS
     ENDIF
 
     !make a call to wait / sync
-    CALL MPI_WAITALL(message_count,request,status,err)
-    ! CALL my_MPI_Waitall(message_count,request,status,err)
+    ! CALL MPI_WAITALL(message_count,request,status,err)
+    CALL my_MPI_Waitall(message_count,request,status,err)
 
     !unpack in left direction
     IF(chunk%chunk_neighbours(chunk_left).NE.external_face) THEN
@@ -511,8 +511,8 @@ CONTAINS
     ENDIF
 
     !need to make a call to wait / sync
-    CALL MPI_WAITALL(message_count,request,status,err)
-    ! CALL my_MPI_Waitall(message_count,request,status,err)
+    ! CALL MPI_WAITALL(message_count,request,status,err)
+    CALL my_MPI_Waitall(message_count,request,status,err)
 
     !unpack in top direction
     IF( chunk%chunk_neighbours(chunk_top).NE.external_face ) THEN
