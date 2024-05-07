@@ -213,5 +213,5 @@ Test problem   2 is within   0.1301714E-10% of the expected solution
 
  Calculation complete
  Clover is finishing
- Wall clock    16.171810865402222     
- First step overhead  -5.0239562988281250E-003
+ Wall clock    15.145492076873779     
+ First step overhead   1.9898891448974609E-002

@@ -74,6 +74,12 @@ void my_MPI_Isend(void *buf, int count, MPI_Fint datatype, int *dest,
     MPI_Comm c_comm = MPI_Comm_f2c(Fcomm);
     MPI_Datatype c_datatype = MPI_Type_f2c(datatype);
     MPI_Request c_request;
+
+    // double *buff = (double *)buf;
+    // printf("buf: %f, %f, %f", buff[0], buff[1], buff[20]);
+    // printf("count: %d", count);
+    // printf("dest: %d", *dest);
+
     MPI_Isend(buf, count, c_datatype, *dest, tag, c_comm, &c_request);
     *request = MPI_Request_c2f(c_request);
 }

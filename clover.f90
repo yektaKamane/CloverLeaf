@@ -64,7 +64,7 @@ CONTAINS
 
   SUBROUTINE clover_barrier
 
-    INTEGER :: err
+    integer(c_int) :: err
 
     CALL MPI_BARRIER(MPI_COMM_WORLD,err)
 
@@ -72,7 +72,7 @@ CONTAINS
 
   SUBROUTINE clover_abort
 
-    INTEGER :: ierr,err
+    integer(c_int) :: ierr,err
 
     CALL MPI_ABORT(MPI_COMM_WORLD,ierr,err)
 
@@ -80,7 +80,7 @@ CONTAINS
 
   SUBROUTINE clover_finalize
 
-    INTEGER :: err
+    integer(c_int) :: err
 
     CLOSE(g_out)
     CALL FLUSH(0)
@@ -94,7 +94,7 @@ CONTAINS
 
     IMPLICIT NONE
 
-    INTEGER :: err,rank,size
+    integer(c_int) :: err,rank,size
     integer(c_int) :: c_mpi_comm
     integer(c_int) :: c_mpi_comm_slf
 
@@ -134,7 +134,7 @@ CONTAINS
 
     IMPLICIT NONE
 
-    INTEGER :: count
+    integer(c_int) :: count
 
     ! Should be changed so there can be more than one chunk per mpi task
 
@@ -151,13 +151,13 @@ CONTAINS
 
     IMPLICIT NONE
 
-    INTEGER :: x_cells,y_cells,left,right,top,bottom
-    INTEGER :: c,delta_x,delta_y
+    integer(c_int) :: x_cells,y_cells,left,right,top,bottom
+    integer(c_int) :: c,delta_x,delta_y
 
     REAL(KIND=8) :: mesh_ratio,factor_x,factor_y
-    INTEGER  :: chunk_x,chunk_y,mod_x,mod_y,split_found
+    integer(c_int)  :: chunk_x,chunk_y,mod_x,mod_y,split_found
 
-    INTEGER  :: cx,cy,cnk,add_x,add_y,add_x_prev,add_y_prev
+    integer(c_int)  :: cx,cy,cnk,add_x,add_y,add_x_prev,add_y_prev
 
     ! 2D Decomposition of the mesh
 
@@ -247,11 +247,11 @@ CONTAINS
 
     IMPLICIT NONE
 
-    INTEGER :: chunk_x_cells, chunk_y_cells
+    integer(c_int) :: chunk_x_cells, chunk_y_cells
 
-    INTEGER :: chunk_mesh_ratio, tile_x, tile_y, split_found, factor_x, factor_y, t
-    INTEGER :: chunk_delta_x, chunk_delta_y,  chunk_mod_x,  chunk_mod_y
-    INTEGER :: add_x_prev, add_y_prev, tile, tx, ty, add_x, add_y, left, right, top, bottom
+    integer(c_int) :: chunk_mesh_ratio, tile_x, tile_y, split_found, factor_x, factor_y, t
+    integer(c_int) :: chunk_delta_x, chunk_delta_y,  chunk_mod_x,  chunk_mod_y
+    integer(c_int) :: add_x_prev, add_y_prev, tile, tx, ty, add_x, add_y, left, right, top, bottom
 
     chunk_mesh_ratio=real(chunk_x_cells)/real(chunk_y_cells)
 
@@ -386,12 +386,12 @@ CONTAINS
 
     IMPLICIT NONE
 
-    INTEGER      :: fields(:),depth, tile, cnk
-    INTEGER      :: left_right_offset(15),bottom_top_offset(15)
-    INTEGER      :: request(4)
-    INTEGER      :: message_count,err
-    INTEGER      :: status(MPI_STATUS_SIZE,4)
-    INTEGER      :: end_pack_index_left_right, end_pack_index_bottom_top,field
+    integer(c_int)      :: fields(:),depth, tile, cnk
+    integer(c_int)      :: left_right_offset(15),bottom_top_offset(15)
+    integer(c_int)      :: request(4)
+    integer(c_int)      :: message_count,err
+    integer(c_int)      :: status(MPI_STATUS_SIZE,4)
+    integer(c_int)      :: end_pack_index_left_right, end_pack_index_bottom_top,field
 
     ! Assuming 1 patch per task, this will be changed
 
@@ -447,8 +447,8 @@ CONTAINS
     ENDIF
 
     !make a call to wait / sync
-    ! CALL MPI_WAITALL(message_count,request,status,err)
-    CALL my_MPI_Waitall(message_count,request,status,err)
+    CALL MPI_WAITALL(message_count,request,status,err)
+    ! CALL my_MPI_Waitall(message_count,request,status,err)
 
     !unpack in left direction
     IF(chunk%chunk_neighbours(chunk_left).NE.external_face) THEN
@@ -511,8 +511,8 @@ CONTAINS
     ENDIF
 
     !need to make a call to wait / sync
-    ! CALL MPI_WAITALL(message_count,request,status,err)
-    CALL my_MPI_Waitall(message_count,request,status,err)
+    CALL MPI_WAITALL(message_count,request,status,err)
+    ! CALL my_MPI_Waitall(message_count,request,status,err)
 
     !unpack in top direction
     IF( chunk%chunk_neighbours(chunk_top).NE.external_face ) THEN
@@ -544,8 +544,8 @@ CONTAINS
 
     IMPLICIT NONE
 
-    INTEGER      :: fields(:),depth, tile, t_offset
-    INTEGER      :: left_right_offset(:)
+    integer(c_int)      :: fields(:),depth, tile, t_offset
+    integer(c_int)      :: left_right_offset(:)
   
   
     t_offset = (chunk%tiles(tile)%t_bottom - chunk%bottom)*depth
@@ -922,39 +922,41 @@ CONTAINS
                                            total_size,                     &
                                            tag_send, tag_recv,                    &
                                            req_send, req_recv)
+    IMPLICIT NONE
 
-    REAL(KIND=8)    :: left_snd_buffer(:), left_rcv_buffer(:)
-    INTEGER         :: left_task
-    INTEGER         :: total_size, tag_send, tag_recv, err
-    INTEGER         :: req_send, req_recv
+    REAL(KIND=8), POINTER    :: left_snd_buffer(:), left_rcv_buffer(:)
+    integer(c_int)         :: left_task
+    integer(c_int)         :: total_size, tag_send, tag_recv, err
+    integer(c_int)         :: req_send, req_recv
     ! i added
     type(c_ptr) :: ptr_snd, ptr_rec
     integer(c_int) :: c_mpi_comm_world
 
-    real, pointer :: tmp_ptr(:), tmp_ptr2(:)
-    allocate(tmp_ptr(size(left_snd_buffer)))  ! Allocate memory for temporary pointer
-    tmp_ptr(:) = left_snd_buffer(:)
+    ! REAL(KIND=8), DIMENSION(:), pointer :: tmp_ptr, tmp_ptr2
+    ! allocate(tmp_ptr(size(left_snd_buffer)))  ! Allocate memory for temporary pointer
+    ! tmp_ptr(:) = left_snd_buffer(:)
 
-    allocate(tmp_ptr2(size(left_rcv_buffer)))  ! Allocate memory for temporary pointer
-    tmp_ptr2(:) = left_rcv_buffer(:)
-
-    c_mpi_comm_world = MPI_COMM_WORLD
+    ! allocate(tmp_ptr2(size(left_rcv_buffer)))  ! Allocate memory for temporary pointer
+    ! tmp_ptr2(:) = left_rcv_buffer(:)
 
     left_task =chunk%chunk_neighbours(chunk_left) - 1
 
-    CALL MPI_ISEND(left_snd_buffer,total_size,MPI_DOUBLE_PRECISION,left_task,tag_send &
-      ,MPI_COMM_WORLD,req_send,err)
+    ! CALL MPI_ISEND(left_snd_buffer,total_size,MPI_DOUBLE_PRECISION,left_task,tag_send &
+    !   ,MPI_COMM_WORLD,req_send,err)
 
-    ! ptr_snd = c_loc(tmp_ptr)
-    ! CALL my_MPI_Isend(c_loc(tmp_ptr) ,total_size,MPI_DOUBLE_PRECISION,left_task,tag_send &
-    !   ,c_mpi_comm_world,req_send,err)
+    ! print *, 'in fort: ', left_snd_buffer(1), ', ', left_snd_buffer(2), ', ', left_snd_buffer(10), ', '
+
+    ptr_snd = c_loc(left_snd_buffer)
+    CALL my_MPI_Isend(ptr_snd ,total_size,MPI_DOUBLE_PRECISION,left_task,tag_send &
+      ,c_mpi_comm_world,req_send,err)
     ! left_snd_buffer(:) = tmp_ptr(:)
 
-    CALL MPI_IRECV(left_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,left_task,tag_recv &
-      ,MPI_COMM_WORLD,req_recv,err)
-    ! ptr_rec = c_loc(tmp_ptr2)
-    ! CALL my_MPI_Irecv(c_loc(tmp_ptr2),total_size,MPI_DOUBLE_PRECISION,left_task,tag_recv &
-    !   ,c_mpi_comm_world,req_recv,err)
+    ! CALL MPI_IRECV(left_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,left_task,tag_recv &
+    !   ,MPI_COMM_WORLD,req_recv,err)
+    
+    ptr_rec = c_loc(left_rcv_buffer)
+    CALL my_MPI_Irecv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,left_task,tag_recv &
+      ,c_mpi_comm_world,req_recv,err)
     ! left_rcv_buffer(:) = tmp_ptr2(:)
 
   END SUBROUTINE clover_send_recv_message_left
@@ -967,8 +969,8 @@ CONTAINS
 
     IMPLICIT NONE
 
-    INTEGER         :: fields(:), tile, depth, t_offset
-    INTEGER         :: left_right_offset(:)
+    integer(c_int)         :: fields(:), tile, depth, t_offset
+    integer(c_int)         :: left_right_offset(:)
     REAL(KIND=8)    :: left_rcv_buffer(:)
 
     t_offset = (chunk%tiles(tile)%t_bottom - chunk%bottom)*depth
@@ -1346,7 +1348,7 @@ CONTAINS
 
     IMPLICIT NONE
 
-    INTEGER        :: tile, fields(:), depth, tot_packr, left_right_offset(:), t_offset
+    integer(c_int)        :: tile, fields(:), depth, tot_packr, left_right_offset(:), t_offset
   
   
     t_offset = (chunk%tiles(tile)%t_bottom - chunk%bottom)*depth
@@ -1727,39 +1729,36 @@ CONTAINS
 
     IMPLICIT NONE
 
-    REAL(KIND=8) :: right_snd_buffer(:), right_rcv_buffer(:)
-    INTEGER      :: right_task
-    INTEGER      :: total_size, tag_send, tag_recv, err
-    INTEGER      :: req_send, req_recv
-     ! i added
+    REAL(KIND=8), POINTER :: right_snd_buffer(:), right_rcv_buffer(:)
+    integer(c_int)      :: right_task
+    integer(c_int)      :: total_size, tag_send, tag_recv, err
+    integer(c_int)      :: req_send, req_recv
+    ! i added
     type(c_ptr) :: ptr_snd, ptr_rec
-    integer(c_int) :: c_mpi_comm_world
 
-    real, pointer :: tmp_ptr(:), tmp_ptr2(:)
-    allocate(tmp_ptr(size(right_snd_buffer)))  ! Allocate memory for temporary pointer
-    tmp_ptr(:) = right_snd_buffer(:)
+    ! REAL(KIND=8), DIMENSION(:), POINTER :: tmp_ptr, tmp_ptr2
+    ! allocate(tmp_ptr(size(right_snd_buffer)))  ! Allocate memory for temporary pointer
+    ! tmp_ptr(:) = right_snd_buffer(:)
 
-    allocate(tmp_ptr2(size(right_rcv_buffer)))  ! Allocate memory for temporary pointer
-    tmp_ptr2(:) = right_rcv_buffer(:)
-
-    c_mpi_comm_world = MPI_COMM_WORLD
+    ! allocate(tmp_ptr2(size(right_rcv_buffer)))  ! Allocate memory for temporary pointer
+    ! tmp_ptr2(:) = right_rcv_buffer(:)
 
     right_task=chunk%chunk_neighbours(chunk_right) - 1
 
-    CALL MPI_ISEND(right_snd_buffer,total_size,MPI_DOUBLE_PRECISION,right_task,tag_send, &
-      MPI_COMM_WORLD,req_send,err)
-
-    ! ptr_snd = c_loc(tmp_ptr)
-    ! CALL my_MPI_ISEND(c_loc(tmp_ptr),total_size,MPI_DOUBLE_PRECISION,right_task,tag_send, &
+    ! CALL MPI_ISEND(right_snd_buffer,total_size,MPI_DOUBLE_PRECISION,right_task,tag_send, &
     !   MPI_COMM_WORLD,req_send,err)
+
+    ptr_snd = c_loc(right_snd_buffer)
+    CALL my_MPI_Isend(ptr_snd,total_size,MPI_DOUBLE_PRECISION,right_task,tag_send, &
+      MPI_COMM_WORLD,req_send,err)
     ! right_snd_buffer(:) = tmp_ptr(:)
 
-    CALL MPI_IRECV(right_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,right_task,tag_recv, &
-      MPI_COMM_WORLD,req_recv,err)
-
-    ! ptr_rec = c_loc(tmp_ptr2)
-    ! CALL MPI_IRECV(c_loc(tmp_ptr2),total_size,MPI_DOUBLE_PRECISION,right_task,tag_recv, &
+    ! CALL MPI_IRECV(right_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,right_task,tag_recv, &
     !   MPI_COMM_WORLD,req_recv,err)
+
+    ptr_rec = c_loc(right_rcv_buffer)
+    CALL my_MPI_Irecv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,right_task,tag_recv, &
+      MPI_COMM_WORLD,req_recv,err)
     ! right_rcv_buffer(:) = tmp_ptr2(:)
 
   END SUBROUTINE clover_send_recv_message_right
@@ -1772,7 +1771,7 @@ CONTAINS
 
     IMPLICIT NONE
 
-    INTEGER         :: fields(:), tile, total_in_right_buff, depth, left_right_offset(:), t_offset
+    INTEGER(c_int)        :: fields(:), tile, total_in_right_buff, depth, left_right_offset(:), t_offset
     REAL(KIND=8)    :: right_rcv_buffer(:)
   
     t_offset = (chunk%tiles(tile)%t_bottom - chunk%bottom)*depth
@@ -2150,7 +2149,7 @@ CONTAINS
 
     IMPLICIT NONE
 
-    INTEGER        :: tile, fields(:), depth, bottom_top_offset(:), t_offset
+    INTEGER(c_int)        :: tile, fields(:), depth, bottom_top_offset(:), t_offset
   
     t_offset = (chunk%tiles(tile)%t_left - chunk%left)*depth
     IF(use_fortran_kernels) THEN
@@ -2526,18 +2525,37 @@ CONTAINS
 
     IMPLICIT NONE
 
-    REAL(KIND=8) :: top_snd_buffer(:), top_rcv_buffer(:)
-    INTEGER      :: top_task
-    INTEGER      :: total_size, tag_send, tag_recv, err
-    INTEGER      :: req_send, req_recv
+    REAL(KIND=8), POINTER :: top_snd_buffer(:), top_rcv_buffer(:)
+    integer(c_int)      :: top_task
+    integer(c_int)      :: total_size, tag_send, tag_recv, err
+    integer(c_int)      :: req_send, req_recv
+    
+    ! i added
+    type(c_ptr) :: ptr_snd, ptr_rec
+    ! REAL(KIND=8), DIMENSION(:), pointer :: tmp_ptr, tmp_ptr2
+    ! allocate(tmp_ptr(size(top_snd_buffer)))  ! Allocate memory for temporary pointer
+    ! tmp_ptr(:) = top_snd_buffer(:)
+
+    ! allocate(tmp_ptr2(size(top_rcv_buffer)))  ! Allocate memory for temporary pointer
+    ! tmp_ptr2(:) = top_rcv_buffer(:)
 
     top_task=chunk%chunk_neighbours(chunk_top) - 1
 
-    CALL MPI_ISEND(top_snd_buffer,total_size,MPI_DOUBLE_PRECISION,top_task,tag_send, &
-      MPI_COMM_WORLD,req_send,err)
+    ! CALL MPI_ISEND(top_snd_buffer,total_size,MPI_DOUBLE_PRECISION,top_task,tag_send, &
+    !   MPI_COMM_WORLD,req_send,err)
 
-    CALL MPI_IRECV(top_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,top_task,tag_recv, &
+    ptr_snd = c_loc(top_snd_buffer)
+    CALL my_MPI_Isend(ptr_snd ,total_size,MPI_DOUBLE_PRECISION,top_task,tag_send, &
+      MPI_COMM_WORLD,req_send,err)
+    ! top_snd_buffer(:) = tmp_ptr(:)
+
+    ! CALL MPI_IRECV(top_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,top_task,tag_recv, &
+    !   MPI_COMM_WORLD,req_recv,err)
+
+    ptr_rec = c_loc(top_rcv_buffer)
+    CALL my_MPI_Irecv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,top_task,tag_recv, &
       MPI_COMM_WORLD,req_recv,err)
+    ! top_rcv_buffer(:) = tmp_ptr2(:)
 
   END SUBROUTINE clover_send_recv_message_top
 
@@ -2549,7 +2567,7 @@ CONTAINS
 
     IMPLICIT NONE
 
-    INTEGER         :: fields(:), tile, total_in_top_buff, depth, bottom_top_offset(:), t_offset
+    integer(c_int)         :: fields(:), tile, total_in_top_buff, depth, bottom_top_offset(:), t_offset
     REAL(KIND=8)    :: top_rcv_buffer(:)
   
     t_offset = (chunk%tiles(tile)%t_left - chunk%left)*depth
@@ -2926,7 +2944,7 @@ CONTAINS
 
     IMPLICIT NONE
 
-    INTEGER        :: tile, fields(:), depth, tot_packb, bottom_top_offset(:), t_offset
+    integer(c_int)        :: tile, fields(:), depth, tot_packb, bottom_top_offset(:), t_offset
   
     t_offset = (chunk%tiles(tile)%t_left - chunk%left)*depth
     IF(use_fortran_kernels) THEN
@@ -3305,18 +3323,36 @@ CONTAINS
 
     IMPLICIT NONE
 
-    REAL(KIND=8) :: bottom_snd_buffer(:), bottom_rcv_buffer(:)
-    INTEGER      :: bottom_task
-    INTEGER      :: total_size, tag_send, tag_recv, err
-    INTEGER      :: req_send, req_recv
+    REAL(KIND=8), POINTER :: bottom_snd_buffer(:), bottom_rcv_buffer(:)
+    integer(c_int)      :: bottom_task
+    integer(c_int)      :: total_size, tag_send, tag_recv, err
+    integer(c_int)      :: req_send, req_recv
+    ! i added
+    type(c_ptr) :: ptr_snd, ptr_rec
+    ! REAL(KIND=8), DIMENSION(:), POINTER :: tmp_ptr, tmp_ptr2
+    ! allocate(tmp_ptr(size(bottom_snd_buffer)))  ! Allocate memory for temporary pointer
+    ! tmp_ptr(:) = bottom_snd_buffer(:)
+
+    ! allocate(tmp_ptr2(size(bottom_rcv_buffer)))  ! Allocate memory for temporary pointer
+    ! tmp_ptr2(:) = bottom_rcv_buffer(:)
 
     bottom_task=chunk%chunk_neighbours(chunk_bottom) - 1
 
-    CALL MPI_ISEND(bottom_snd_buffer,total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_send &
-      ,MPI_COMM_WORLD,req_send,err)
+    ! CALL MPI_ISEND(bottom_snd_buffer,total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_send &
+    !   ,MPI_COMM_WORLD,req_send,err)
 
-    CALL MPI_IRECV(bottom_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_recv &
+    ptr_snd = c_loc(bottom_snd_buffer)
+    CALL my_MPI_Isend(ptr_snd, total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_send &
+      ,MPI_COMM_WORLD,req_send,err)
+    ! bottom_snd_buffer(:) = tmp_ptr(:)
+
+    ! CALL MPI_IRECV(bottom_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_recv &
+    !   ,MPI_COMM_WORLD,req_recv,err)
+
+    ptr_rec = c_loc(bottom_rcv_buffer)
+    CALL my_MPI_Irecv(ptr_rec, total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_recv &
       ,MPI_COMM_WORLD,req_recv,err)
+    ! bottom_rcv_buffer(:) = tmp_ptr2(:)
 
   END SUBROUTINE clover_send_recv_message_bottom
 
@@ -3328,7 +3364,7 @@ CONTAINS
 
     IMPLICIT NONE
 
-    INTEGER         :: fields(:), tile, depth, bottom_top_offset(:), t_offset
+    integer(c_int)         :: fields(:), tile, depth, bottom_top_offset(:), t_offset
     REAL(KIND=8)    :: bottom_rcv_buffer(:)
   
     t_offset = (chunk%tiles(tile)%t_left - chunk%left)*depth
@@ -3710,7 +3746,7 @@ CONTAINS
 
     REAL(KIND=8) :: total
 
-    INTEGER :: err
+    integer(c_int) :: err
 
     total=value
 
@@ -3728,7 +3764,7 @@ CONTAINS
 
     REAL(KIND=8) :: minimum
 
-    INTEGER :: err
+    integer(c_int) :: err
 
     minimum=value
 
@@ -3746,7 +3782,7 @@ CONTAINS
 
     REAL(KIND=8) :: maximum
 
-    INTEGER :: err
+    integer(c_int) :: err
 
     maximum=value
 
@@ -3764,7 +3800,7 @@ CONTAINS
 
     REAL(KIND=8) :: values(parallel%max_task)
 
-    INTEGER :: err
+    integer(c_int) :: err
 
     values(1)=value ! Just to ensure it will work in serial
 
@@ -3776,11 +3812,11 @@ CONTAINS
 
     IMPLICIT NONE
 
-    INTEGER :: error
+    integer(c_int) :: error
 
-    INTEGER :: maximum
+    integer(c_int) :: maximum
 
-    INTEGER :: err
+    integer(c_int) :: err
 
     maximum=error
 

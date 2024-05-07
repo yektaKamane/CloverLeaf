@@ -128,9 +128,12 @@ C_MPI_COMPILER=mpicc
 INCLUDE_PATH = /usr/local/include/legio
 LIBRARY_PATH = /usr/local/lib/
 LIBRARY_NAME = legio
+
 MPI_LIB = mpi
 
-FLAGS += -L. -lmpi_wrapper -L$(LIBRARY_PATH) -I$(INCLUDE_PATH) -l$(LIBRARY_NAME) -l$(MPI_LIB) -lstdc++
+# change this back to call to legio again
+FLAGS += -L. -lmpi_wrapper -l$(MPI_LIB) -lstdc++
+# FLAGS += -L. -lmpi_wrapper -L$(LIBRARY_PATH) -I$(INCLUDE_PATH) -l$(LIBRARY_NAME) -l$(MPI_LIB) -lstdc++
 # CFLAGS += -L. -lmpi_wrapper -L$(LIBRARY_PATH) -I$(INCLUDE_PATH) -l$(LIBRARY_NAME) -l$(MPI_LIB) -lstdc++
 
 
