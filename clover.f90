@@ -39,34 +39,13 @@ MODULE clover_module
 
   IMPLICIT NONE
 
-  ! I added this part
-  ! INTERFACE
-
-  ! subroutine raise_sigint_c() bind(C, name="raise_sigint")
-  ! end subroutine raise_sigint_c
-
-  ! subroutine my_MPI_Comm_rank(Fcomm, rank, ierr) bind(C, name="my_MPI_Comm_rank")  
-  !   use iso_c_binding      
-  !   integer(c_int), value :: Fcomm
-  !   integer(c_int), intent(out) :: rank
-  !   integer(c_int), intent(out) :: ierr
-  ! end subroutine my_MPI_Comm_rank
-
-  ! subroutine my_MPI_Barrier(Fcomm, ierr) bind(C, name="my_MPI_Barrier")
-  !   use iso_c_binding
-  !   integer(c_int), value :: Fcomm
-  !   integer(c_int), intent(out) :: ierr
-  ! end subroutine my_MPI_Barrier
-  
-  ! END INTERFACE
-
 CONTAINS
 
   SUBROUTINE clover_barrier
 
     integer(c_int) :: err
 
-    CALL MPI_BARRIER(MPI_COMM_WORLD,err)
+    CALL my_MPI_Barrier(MPI_COMM_WORLD,err)
 
   END SUBROUTINE clover_barrier
 
@@ -74,7 +53,7 @@ CONTAINS
 
     integer(c_int) :: ierr,err
 
-    CALL MPI_ABORT(MPI_COMM_WORLD,ierr,err)
+    CALL my_MPI_Abort(MPI_COMM_WORLD,ierr,err)
 
   END SUBROUTINE clover_abort
 
@@ -111,10 +90,6 @@ CONTAINS
     ! substituted this with my own function
     call my_MPI_Comm_rank(c_mpi_comm, rank, err)
     ! CALL MPI_COMM_RANK(MPI_COMM_WORLD,rank,err)
-
-    ! if (rank == 2) then
-    !   call raise_sigint_c()
-    ! end if
 
     CALL my_MPI_Comm_size(MPI_COMM_WORLD,size,err)
 
@@ -3742,15 +3717,20 @@ CONTAINS
 
     IMPLICIT NONE
 
-    REAL(KIND=8) :: value
+    REAL(KIND=8), target:: value
 
-    REAL(KIND=8) :: total
+    REAL(KIND=8), target :: total
 
     integer(c_int) :: err
 
+    type(C_PTR) :: ptr_val, ptr_total
+
     total=value
 
-    CALL MPI_REDUCE(value,total,1,MPI_DOUBLE_PRECISION,MPI_SUM,0,MPI_COMM_WORLD,err)
+    ptr_val = c_loc(value)
+    ptr_total = c_loc(total)
+
+    CALL my_MPI_Reduce(ptr_val,ptr_total,1,MPI_DOUBLE_PRECISION,MPI_SUM,0,MPI_COMM_WORLD,err)
 
     value=total
 
@@ -3760,15 +3740,20 @@ CONTAINS
 
     IMPLICIT NONE
 
-    REAL(KIND=8) :: value
+    REAL(KIND=8), target :: value
 
-    REAL(KIND=8) :: minimum
+    REAL(KIND=8), target :: minimum
 
     integer(c_int) :: err
 
+    type(C_PTR) :: ptr_val, ptr_min
+
     minimum=value
 
-    CALL MPI_ALLREDUCE(value,minimum,1,MPI_DOUBLE_PRECISION,MPI_MIN,MPI_COMM_WORLD,err)
+    ptr_val = c_loc(value)
+    ptr_min = c_loc(minimum)
+
+    CALL my_MPI_Allreduce(ptr_val,ptr_min,1,MPI_DOUBLE_PRECISION,MPI_MIN,MPI_COMM_WORLD,err)
 
     value=minimum
 
@@ -3778,15 +3763,20 @@ CONTAINS
 
     IMPLICIT NONE
 
-    REAL(KIND=8) :: value
+    REAL(KIND=8), target :: value
 
-    REAL(KIND=8) :: maximum
+    REAL(KIND=8), target :: maximum
 
     integer(c_int) :: err
 
+    type(C_PTR) :: ptr_val, ptr_max
+
     maximum=value
 
-    CALL MPI_ALLREDUCE(value,maximum,1,MPI_DOUBLE_PRECISION,MPI_MAX,MPI_COMM_WORLD,err)
+    ptr_val = c_loc(value)
+    ptr_max = c_loc(maximum)
+
+    CALL my_MPI_Allreduce(ptr_val,ptr_max,1,MPI_DOUBLE_PRECISION,MPI_MAX,MPI_COMM_WORLD,err)
 
     value=maximum
 
@@ -3812,15 +3802,20 @@ CONTAINS
 
     IMPLICIT NONE
 
-    integer(c_int) :: error
+    integer(c_int), target :: error
 
-    integer(c_int) :: maximum
+    integer(c_int), target :: maximum
 
     integer(c_int) :: err
 
+    type(C_PTR) :: ptr_val, ptr_max
+
     maximum=error
 
-    CALL MPI_ALLREDUCE(error,maximum,1,MPI_INTEGER,MPI_MAX,MPI_COMM_WORLD,err)
+    ptr_val = c_loc(error)
+    ptr_max = c_loc(maximum)
+
+    CALL MPI_ALLREDUCE(ptr_val,ptr_max,1,MPI_INTEGER,MPI_MAX,MPI_COMM_WORLD,err)
 
     error=maximum
 

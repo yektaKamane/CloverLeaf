@@ -108,5 +108,23 @@ module mpi_interface
             integer(c_int), intent(out) :: ierr
         end subroutine my_MPI_Allgather
 
+        subroutine my_MPI_Reduce(sendbuf, recvbuf, count, datatype, op, root, comm, ierr) bind(c, name="my_MPI_Reduce")
+            use iso_c_binding
+            type(c_ptr), value :: sendbuf
+            type(c_ptr), value :: recvbuf
+            integer(C_INT), value :: count, root
+            integer(C_INT), value :: datatype, op, comm
+            integer(c_int), intent(out) :: ierr
+        end subroutine my_MPI_Reduce
+
+        subroutine my_MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm, ierr) bind(c, name="my_MPI_Allreduce")
+            use iso_c_binding
+            type(c_ptr), value :: sendbuf
+            type(c_ptr), value :: recvbuf
+            integer(C_INT), value :: count
+            integer(C_INT), value :: datatype, op, comm
+            integer(c_int), intent(out) :: ierr
+        end subroutine my_MPI_Allreduce
+
     end interface
 end module mpi_interface
