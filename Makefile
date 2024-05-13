@@ -132,13 +132,13 @@ LIBRARY_NAME = legio
 MPI_LIB = mpi
 
 # change this back to call to legio again
-FLAGS += -L. -lmpi_wrapper -l$(MPI_LIB) -lstdc++
-# FLAGS += -L. -lmpi_wrapper -L$(LIBRARY_PATH) -I$(INCLUDE_PATH) -l$(LIBRARY_NAME) -l$(MPI_LIB) -lstdc++
+# FLAGS += -L. -lmpi_wrapper -l$(MPI_LIB) -lstdc++
+FLAGS += -L$(LIBRARY_PATH) -I$(INCLUDE_PATH) -l$(LIBRARY_NAME) -l$(MPI_LIB) -lstdc++
 # CFLAGS += -L. -lmpi_wrapper -L$(LIBRARY_PATH) -I$(INCLUDE_PATH) -l$(LIBRARY_NAME) -l$(MPI_LIB) -lstdc++
 
 
 clover_leaf: c_lover *.f90 Makefile
-	$(MPI_COMPILER) $(FLAGS)	\
+	$(MPI_COMPILER) -o clover_leaf	\
 	mpi_interface.f90   \
 	data.f90			\
 	definitions.f90			\
@@ -202,7 +202,7 @@ clover_leaf: c_lover *.f90 Makefile
 	pack_kernel_c.o			\
 	generate_chunk_kernel_c.o	\
 	initialise_chunk_kernel_c.o	\
-	-o clover_leaf; echo $(MESSAGE)
+	$(FLAGS); echo $(MESSAGE)
 
 c_lover: *.c Makefile
 	$(C_MPI_COMPILER) $(CFLAGS)     \
