@@ -126,5 +126,17 @@ module mpi_interface
             integer(c_int), intent(out) :: ierr
         end subroutine my_MPI_Allreduce
 
+        subroutine my_MPI_Sendrecv(sendbuf, sendcount, sendtype, dest, sendtag, &
+                                    recvbuf, recvcount, recvtype, source, recvtag, &
+                                    comm, status, ierr) bind(c, name="my_MPI_Sendrecv")
+            use iso_c_binding
+            use mpi
+            integer(c_int), intent(in) :: sendcount, dest, sendtag, recvcount, source, recvtag
+            integer(c_int), intent(in) :: sendtype, recvtype, comm
+            integer(c_int), intent(out) :: ierr
+            integer(c_int), dimension(MPI_STATUS_SIZE) :: status
+            type(c_ptr), value :: sendbuf, recvbuf
+        end subroutine my_MPI_Sendrecv
+
     end interface
 end module mpi_interface

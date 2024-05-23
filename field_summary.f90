@@ -151,5 +151,4 @@ SUBROUTINE field_summary()
     ENDIF
   ENDIF
 
-
 END SUBROUTINE field_summary

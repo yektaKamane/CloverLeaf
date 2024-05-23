@@ -30,6 +30,7 @@ SUBROUTINE hydro
     USE flux_calc_module
     USE advection_module
     USE reset_field_module
+    USE mpi_interface
 
     IMPLICIT NONE
 
@@ -41,6 +42,8 @@ SUBROUTINE hydro
     REAL(KIND=8)    :: first_step,second_step
     REAL(KIND=8)    :: kernel_total,totals(parallel%max_task)
 
+    integer(c_int) :: rank, err
+
     timerstart = timer()
 
     DO
@@ -49,12 +52,24 @@ SUBROUTINE hydro
 
         step = step + 1
 
+        ! i added - unecessary
+        CALL clover_barrier
+
         CALL timestep()
 
+        IF (step == 86) THEN 
+            call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
+            IF (rank == 1) THEN
+                call raise_sigint_c()
+            ENDIF
+        ENDIF
+
+        ! predict set to true
         CALL PdV(.TRUE.)
 
         CALL accelerate()
 
+        ! predict set to false
         CALL PdV(.FALSE.)
 
         CALL flux_calc()
