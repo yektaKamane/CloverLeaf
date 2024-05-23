@@ -1718,7 +1718,7 @@ CONTAINS
     ptr_snd = c_loc(right_snd_buffer)
     ! i changed the dest to 0
     ! no more seg faults
-    CALL my_MPI_Isend(ptr_snd,total_size,MPI_DOUBLE_PRECISION,0,tag_send, &
+    CALL my_MPI_Isend(ptr_snd,total_size,MPI_DOUBLE_PRECISION,right_task,tag_send, &
       MPI_COMM_WORLD,req_send,err)
 
     ! CALL my_MPI_Send(ptr_snd,total_size,MPI_DOUBLE_PRECISION,right_task,tag_send, &
@@ -1728,7 +1728,7 @@ CONTAINS
     !   MPI_COMM_WORLD,req_recv,err)
 
     ptr_rec = c_loc(right_rcv_buffer)
-    CALL my_MPI_Irecv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,0,tag_recv, &
+    CALL my_MPI_Irecv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,right_task,tag_recv, &
       MPI_COMM_WORLD,req_recv,err)
 
     ! CALL my_MPI_Recv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,right_task,tag_recv, &

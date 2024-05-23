@@ -32,7 +32,7 @@ CONTAINS
 
     IMPLICIT NONE
 
-    INTEGER :: tile,fields(NUM_FIELDS),depth
+    INTEGER :: tile,fields(NUM_FIELDS),depth, err
     REAL(KIND=8) :: kernel_time,timer
 
       !TODO: fix the chunk comms phase
@@ -40,6 +40,9 @@ CONTAINS
     CALL update_tile_halo(fields,depth)
     IF(profiler_on) profiler%tile_halo_exchange=profiler%tile_halo_exchange+(timer()-kernel_time)
     IF(profiler_on) kernel_time=timer()
+    ! i added
+    call my_MPI_Barrier(MPI_COMM_WORLD, err)
+
     CALL clover_exchange(fields,depth)
     IF(profiler_on) profiler%mpi_halo_exchange=profiler%mpi_halo_exchange+(timer()-kernel_time)
  

@@ -55,11 +55,12 @@ SUBROUTINE hydro
         ! i added - unecessary
         CALL clover_barrier
 
-        IF (step == 86) THEN 
+        IF (step == 2) THEN 
             call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
             IF (rank == 1) THEN
                 call raise_sigint_c()
             ENDIF
+            ! call my_MPI_Barrier(MPI_COMM_WORLD, err)
         ENDIF
 
         ! there are 6 calls to update_halo
