@@ -69,6 +69,17 @@ module mpi_interface
             integer(c_int), intent(out) :: ierr
         end subroutine my_MPI_Isend
 
+        subroutine my_MPI_Send(buf, count, datatype, dest, tag, Fcomm, ierr) bind(C, name="my_MPI_Send")
+            use iso_c_binding
+            type(c_ptr), value :: buf
+            integer(c_int), value :: count
+            integer(c_int), value :: datatype
+            integer(c_int), intent(in) :: dest
+            integer(c_int), intent(in) :: tag
+            integer(c_int), value :: Fcomm
+            integer(c_int), intent(out) :: ierr
+        end subroutine my_MPI_Send
+
         subroutine my_MPI_Irecv(buf, count, datatype, source, tag, Fcomm, request, ierr) bind(C, name="my_MPI_Irecv")
             use iso_c_binding
             type(c_ptr), value :: buf
@@ -80,6 +91,19 @@ module mpi_interface
             integer(c_int), intent(out) :: request
             integer(c_int), intent(out) :: ierr
         end subroutine my_MPI_Irecv
+
+        subroutine my_MPI_Recv(buf, count, datatype, source, tag, Fcomm, status, ierr) bind(C, name="my_MPI_Recv")
+            use iso_c_binding
+            use mpi
+            type(c_ptr), value :: buf
+            integer(c_int), value :: count
+            integer(c_int), value :: datatype
+            integer(c_int), intent(in) :: source
+            integer(c_int), intent(in) :: tag
+            integer(c_int), value :: Fcomm
+            integer(c_int), dimension(MPI_STATUS_SIZE) :: status
+            integer(c_int), intent(out) :: ierr
+        end subroutine my_MPI_Recv
 
         subroutine my_MPI_Gather(sendbuf, sendcount, sendtype, recvbufer, recvcount, recvtype, &
              root, Fcomm, ierr) bind(C, name="my_MPI_Gather")

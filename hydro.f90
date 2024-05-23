@@ -55,8 +55,6 @@ SUBROUTINE hydro
         ! i added - unecessary
         CALL clover_barrier
 
-        CALL timestep()
-
         IF (step == 86) THEN 
             call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
             IF (rank == 1) THEN
@@ -64,8 +62,12 @@ SUBROUTINE hydro
             ENDIF
         ENDIF
 
+        ! there are 6 calls to update_halo
+
+        CALL timestep() !two of them here
+
         ! predict set to true
-        CALL PdV(.TRUE.)
+        CALL PdV(.TRUE.) ! one here
 
         CALL accelerate()
 
@@ -74,7 +76,7 @@ SUBROUTINE hydro
 
         CALL flux_calc()
 
-        CALL advection()
+        CALL advection() ! three here
 
         CALL reset_field()
 
