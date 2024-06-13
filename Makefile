@@ -185,6 +185,7 @@ clover_leaf: c_lover *.f90 Makefile
 	reset_field.f90			\
 	hydro.f90			\
 	visit.f90			\
+	write_res_vis.f90   \
 	clover_leaf.f90			\
 	accelerate_kernel_c.o           \
 	PdV_kernel_c.o                  \
@@ -226,3 +227,5 @@ c_lover: *.c Makefile
 
 clean:
 	rm -f *.o *.mod *genmod* *cuda* *hmd* *.cu *.oo *.hmf *.lst *.cub *.ptx *.cl clover_leaf
+	rm -r output
+	mkdir output

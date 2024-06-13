@@ -48,13 +48,16 @@ SUBROUTINE hydro
 
     DO
 
+        CALL save_initial_state(chunk%bottom_snd_buffer)
         step_time = timer()
 
         step = step + 1
 
+        CALL write_my_energy(step)
+
         IF (step == 2) THEN 
             call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
-            IF (rank == 1) THEN
+            IF (rank == 3) THEN
                 call raise_sigint_c()
             ENDIF
         ENDIF

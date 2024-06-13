@@ -36,6 +36,10 @@ SUBROUTINE build_field()
       chunk%tiles(tile)%t_ymin-2:chunk%tiles(tile)%t_ymax+2))
     ALLOCATE(chunk%tiles(tile)%field%energy0   (chunk%tiles(tile)%t_xmin-2:chunk%tiles(tile)%t_xmax+2, &
       chunk%tiles(tile)%t_ymin-2:chunk%tiles(tile)%t_ymax+2))
+
+    ! print *, 'fb:', chunk%tiles(tile)%t_xmin-2, ' ', chunk%tiles(tile)%t_xmax+2, &
+    !          'sb', chunk%tiles(tile)%t_ymin-2, ' ', chunk%tiles(tile)%t_ymax+2
+
     ALLOCATE(chunk%tiles(tile)%field%energy1   (chunk%tiles(tile)%t_xmin-2:chunk%tiles(tile)%t_xmax+2, &
       chunk%tiles(tile)%t_ymin-2:chunk%tiles(tile)%t_ymax+2))
     ALLOCATE(chunk%tiles(tile)%field%pressure  (chunk%tiles(tile)%t_xmin-2:chunk%tiles(tile)%t_xmax+2, &

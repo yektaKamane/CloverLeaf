@@ -420,9 +420,6 @@ CONTAINS
       message_count = message_count + 2
     ENDIF
 
-    !make a call to wait / sync
-    ! CALL MPI_WAITALL(message_count,request,status,err)
-    ! CALL my_MPI_Waitall(message_count,request,status,err)
 
     !unpack in left direction
     IF(chunk%chunk_neighbours(chunk_left).NE.external_face) THEN
@@ -483,10 +480,6 @@ CONTAINS
         request(message_count+1), request(message_count+2))
       message_count = message_count + 2
     ENDIF
-
-    !need to make a call to wait / sync
-    ! CALL MPI_WAITALL(message_count,request,status,err)
-    ! CALL my_MPI_Waitall(message_count,request,status,err)
 
     !unpack in top direction
     IF( chunk%chunk_neighbours(chunk_top).NE.external_face ) THEN
@@ -902,36 +895,42 @@ CONTAINS
     integer(c_int)         :: left_task
     integer(c_int)         :: total_size, tag_send, tag_recv, err
     integer(c_int)         :: req_send, req_recv
+    integer(c_int)         :: rank, i
     ! i added
     type(c_ptr) :: ptr_snd, ptr_rec
     integer :: status(MPI_STATUS_SIZE)
 
+    do i = 1, total_size
+        left_rcv_buffer(i) = left_snd_buffer(i); 
+    end do
+
+    ! destination rank
     left_task =chunk%chunk_neighbours(chunk_left) - 1
 
-    ! CALL MPI_IRECV(left_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,left_task,tag_recv &
-    !   ,MPI_COMM_WORLD,req_recv,err)    
-    ptr_rec = c_loc(left_rcv_buffer)
-
-    ! CALL my_MPI_Irecv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,left_task,tag_recv &
-    !   ,MPI_COMM_WORLD,req_recv,err)
-
-    CALL my_MPI_Recv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,left_task,tag_recv &
-      ,MPI_COMM_WORLD,status,err)
-
-
-    ! CALL MPI_ISEND(left_snd_buffer,total_size,MPI_DOUBLE_PRECISION,left_task,tag_send &
-    !   ,MPI_COMM_WORLD,req_send,err)
+    ! source rank
+    call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
 
     ptr_snd = c_loc(left_snd_buffer)
-    ! CALL my_MPI_Isend(ptr_snd ,total_size,MPI_DOUBLE_PRECISION,left_task,tag_send &
-    !   ,MPI_COMM_WORLD,req_send,err)
+    ptr_rec = c_loc(left_rcv_buffer)
 
-    CALL my_MPI_Send(ptr_snd ,total_size,MPI_DOUBLE_PRECISION,left_task,tag_send &
-      ,MPI_COMM_WORLD,err)
+    IF (rank < left_task) then 
+    
+      CALL my_MPI_Send(ptr_snd ,total_size,MPI_DOUBLE_PRECISION,left_task,tag_send &
+        ,MPI_COMM_WORLD,err)
 
-    ! call my_MPI_Sendrecv(ptr_snd, total_size, MPI_DOUBLE_PRECISION, left_task, tag_send, &
-    !                         ptr_rec, total_size, MPI_DOUBLE_PRECISION, left_task, tag_recv, &
-    !                         MPI_COMM_WORLD, status, err)
+      CALL my_MPI_Recv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,left_task,tag_recv &
+        ,MPI_COMM_WORLD,status,err)
+
+    ELSE
+
+      CALL my_MPI_Recv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,left_task,tag_recv &
+        ,MPI_COMM_WORLD,status,err)
+
+      CALL my_MPI_Send(ptr_snd ,total_size,MPI_DOUBLE_PRECISION,left_task,tag_send &
+        ,MPI_COMM_WORLD,err)
+
+    ENDIF
+    
 
   END SUBROUTINE clover_send_recv_message_left
 
@@ -1707,37 +1706,40 @@ CONTAINS
     integer(c_int)      :: right_task
     integer(c_int)      :: total_size, tag_send, tag_recv, err
     integer(c_int)      :: req_send, req_recv
+    integer(c_int)         :: rank, i
     ! i added
     type(c_ptr) :: ptr_snd, ptr_rec
     integer :: status(MPI_STATUS_SIZE)
 
     right_task=chunk%chunk_neighbours(chunk_right) - 1
 
-    ! CALL MPI_ISEND(right_snd_buffer,total_size,MPI_DOUBLE_PRECISION,right_task,tag_send, &
-    !   MPI_COMM_WORLD,req_send,err)
-
     ptr_snd = c_loc(right_snd_buffer)
-    ! i changed the dest to 0
-    ! no more seg faults
-    ! CALL my_MPI_Isend(ptr_snd,total_size,MPI_DOUBLE_PRECISION,right_task,tag_send, &
-    !   MPI_COMM_WORLD,req_send,err)
-
-    CALL my_MPI_Send(ptr_snd,total_size,MPI_DOUBLE_PRECISION,right_task,tag_send, &
-      MPI_COMM_WORLD,err)
-
-    ! CALL MPI_IRECV(right_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,right_task,tag_recv, &
-    !   MPI_COMM_WORLD,req_recv,err)
-
     ptr_rec = c_loc(right_rcv_buffer)
-    ! CALL my_MPI_Irecv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,right_task,tag_recv, &
-    !   MPI_COMM_WORLD,req_recv,err)
 
-    CALL my_MPI_Recv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,right_task,tag_recv, &
-      MPI_COMM_WORLD,status,err)
+    call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
 
-    ! call my_MPI_Sendrecv(ptr_snd, total_size, MPI_DOUBLE_PRECISION, right_task, tag_send, &
-    !                     ptr_rec, total_size, MPI_DOUBLE_PRECISION, right_task, tag_recv, &
-    !                     MPI_COMM_WORLD, status, err)
+    do i = 1, total_size
+        right_rcv_buffer(i) = right_snd_buffer(i); 
+    end do
+
+    IF (rank < right_task) then 
+
+      CALL my_MPI_Send(ptr_snd,total_size,MPI_DOUBLE_PRECISION,right_task,tag_send, &
+        MPI_COMM_WORLD,err)
+
+      CALL my_MPI_Recv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,right_task,tag_recv, &
+        MPI_COMM_WORLD,status,err)
+
+    ELSE
+
+        CALL my_MPI_Recv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,right_task,tag_recv, &
+        MPI_COMM_WORLD,status,err)
+
+        CALL my_MPI_Send(ptr_snd,total_size,MPI_DOUBLE_PRECISION,right_task,tag_send, &
+        MPI_COMM_WORLD,err)
+
+    ENDIF
+
 
   END SUBROUTINE clover_send_recv_message_right
 
@@ -2507,36 +2509,39 @@ CONTAINS
     integer(c_int)      :: top_task
     integer(c_int)      :: total_size, tag_send, tag_recv, err
     integer(c_int)      :: req_send, req_recv
-    
+    integer(c_int)         :: rank, i
     ! i added
     type(c_ptr) :: ptr_snd, ptr_rec
     integer :: status(MPI_STATUS_SIZE)
 
     top_task=chunk%chunk_neighbours(chunk_top) - 1
 
-    ! CALL MPI_ISEND(top_snd_buffer,total_size,MPI_DOUBLE_PRECISION,top_task,tag_send, &
-    !   MPI_COMM_WORLD,req_send,err)
-
     ptr_snd = c_loc(top_snd_buffer)
-    ! CALL my_MPI_Isend(ptr_snd ,total_size,MPI_DOUBLE_PRECISION,top_task,tag_send, &
-    !   MPI_COMM_WORLD,req_send,err)
-
-    CALL my_MPI_Send(ptr_snd,total_size,MPI_DOUBLE_PRECISION,top_task,tag_send, &
-      MPI_COMM_WORLD,err)
-
-    ! CALL MPI_IRECV(top_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,top_task,tag_recv, &
-    !   MPI_COMM_WORLD,req_recv,err)
-
     ptr_rec = c_loc(top_rcv_buffer)
-    ! CALL my_MPI_Irecv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,top_task,tag_recv, &
-    !   MPI_COMM_WORLD,req_recv,err)
 
-    CALL my_MPI_Recv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,top_task,tag_recv, &
-      MPI_COMM_WORLD,status,err)
+    call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
+    
+    do i = 1, total_size
+        top_rcv_buffer(i) = top_snd_buffer(i); 
+    end do
 
-    ! call my_MPI_Sendrecv(ptr_snd, total_size, MPI_DOUBLE_PRECISION, top_task, tag_send, &
-    !                     ptr_rec, total_size, MPI_DOUBLE_PRECISION, top_task, tag_recv, &
-    !                     MPI_COMM_WORLD, status, err)    
+    IF (rank < top_task) then 
+
+      CALL my_MPI_Send(ptr_snd,total_size,MPI_DOUBLE_PRECISION,top_task,tag_send, &
+        MPI_COMM_WORLD,err)
+
+      CALL my_MPI_Recv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,top_task,tag_recv, &
+        MPI_COMM_WORLD,status,err)  
+    
+    ELSE
+
+      CALL my_MPI_Recv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,top_task,tag_recv, &
+            MPI_COMM_WORLD,status,err) 
+
+      CALL my_MPI_Send(ptr_snd,total_size,MPI_DOUBLE_PRECISION,top_task,tag_send, &
+            MPI_COMM_WORLD,err)
+
+    ENDIF
 
   END SUBROUTINE clover_send_recv_message_top
 
@@ -3308,36 +3313,39 @@ CONTAINS
     integer(c_int)      :: bottom_task
     integer(c_int)      :: total_size, tag_send, tag_recv, err
     integer(c_int)      :: req_send, req_recv
+    integer(c_int)         :: rank, i
     ! i added
     type(c_ptr) :: ptr_snd, ptr_rec
     integer :: status(MPI_STATUS_SIZE)
 
     bottom_task=chunk%chunk_neighbours(chunk_bottom) - 1
 
+    call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
 
-    ! CALL MPI_IRECV(bottom_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_recv &
-    !   ,MPI_COMM_WORLD,req_recv,err)
+    do i = 1, total_size
+        bottom_rcv_buffer(i) = bottom_snd_buffer(i); 
+    end do
 
     ptr_rec = c_loc(bottom_rcv_buffer)
-    ! CALL my_MPI_Irecv(ptr_rec, total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_recv &
-    !   ,MPI_COMM_WORLD,req_recv,err)
-
-    CALL my_MPI_Recv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_recv &
-      ,MPI_COMM_WORLD,status,err)
-
-    ! call my_MPI_Sendrecv(ptr_snd, total_size, MPI_DOUBLE_PRECISION, bottom_task, tag_send, &
-    !                     ptr_rec, total_size, MPI_DOUBLE_PRECISION, bottom_task, tag_recv, &
-    !                     MPI_COMM_WORLD, status, err)   
-
-    ! CALL MPI_ISEND(bottom_snd_buffer,total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_send &
-    !   ,MPI_COMM_WORLD,req_send,err)
-
     ptr_snd = c_loc(bottom_snd_buffer)
-    ! CALL my_MPI_Isend(ptr_snd, total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_send &
-    !   ,MPI_COMM_WORLD,req_send,err)
 
-    CALL my_MPI_Send(ptr_snd, total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_send &
-      ,MPI_COMM_WORLD,err) 
+    IF (rank < bottom_task) then 
+
+      CALL my_MPI_Send(ptr_snd, total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_send &
+        ,MPI_COMM_WORLD,err) 
+
+      CALL my_MPI_Recv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_recv &
+        ,MPI_COMM_WORLD,status,err)
+
+    ELSE
+
+      CALL my_MPI_Recv(ptr_rec,total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_recv &
+          ,MPI_COMM_WORLD,status,err)
+
+      CALL my_MPI_Send(ptr_snd, total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_send &
+          ,MPI_COMM_WORLD,err) 
+
+    ENDIF
 
   END SUBROUTINE clover_send_recv_message_bottom
 
