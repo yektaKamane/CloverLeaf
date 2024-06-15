@@ -117,7 +117,7 @@ CONTAINS
 
   END SUBROUTINE clover_get_num_chunks
 
-  SUBROUTINE clover_decompose(x_cells,y_cells,left,right,bottom,top)
+  SUBROUTINE clover_decompose(x_cells,y_cells,left,right,bottom,top,chunk_x,chunk_y)
 
     ! This decomposes the mesh into a number of chunks.
     ! The number of chunks may be a multiple of the number of mpi tasks
@@ -171,6 +171,9 @@ CONTAINS
     mod_x=MOD(x_cells,chunk_x)
     mod_y=MOD(y_cells,chunk_y)
 
+    ! print *, "chunk_y:", chunk_y
+    ! print *, "chunk_x:", chunk_x
+
     ! Set up chunk mesh ranges and chunk connectivity
 
     add_x_prev=0
@@ -206,6 +209,7 @@ CONTAINS
       add_x_prev=0
       IF(cy.LE.mod_y)add_y_prev=add_y_prev+1
     ENDDO
+
 
     IF(parallel%boss)THEN
       WRITE(g_out,*)
@@ -895,17 +899,29 @@ CONTAINS
     integer(c_int)         :: left_task
     integer(c_int)         :: total_size, tag_send, tag_recv, err
     integer(c_int)         :: req_send, req_recv
-    integer(c_int)         :: rank, i
+    integer(c_int)         :: rank, i, failed_size
     ! i added
     type(c_ptr) :: ptr_snd, ptr_rec
     integer :: status(MPI_STATUS_SIZE)
 
+    
+    ! mirroring
     do i = 1, total_size
         left_rcv_buffer(i) = left_snd_buffer(i); 
     end do
 
     ! destination rank
     left_task =chunk%chunk_neighbours(chunk_left) - 1
+
+    ! check whether left_task has failed
+    ! call fort_fault_number(MPI_COMM_WORLD, failed_size)
+    ! print * , "failed_size", failed_size
+
+    ! if failed come up with a list of alternatives (aka, other lefts)
+      ! print *, "chunk_y:", chunk_y
+      ! print *, "chunk_x:", chunk_x
+
+    
 
     ! source rank
     call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)

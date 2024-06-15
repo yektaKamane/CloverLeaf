@@ -3,6 +3,13 @@ module mpi_interface
     use mpi
 
     interface
+
+        subroutine fort_fault_number(Fcomm, size) bind(C, name="fort_fault_number")
+            use iso_c_binding
+            integer(c_int), value :: Fcomm
+            integer(c_int), intent(out) :: size
+        end subroutine fort_fault_number
+
         subroutine raise_sigint_c() bind(C, name="raise_sigint")
             use iso_c_binding
         end subroutine raise_sigint_c

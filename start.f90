@@ -55,7 +55,7 @@ SUBROUTINE start
   CALL clover_get_num_chunks(number_of_chunks)
 
 
-  CALL clover_decompose(grid%x_cells,grid%y_cells,left,right,bottom,top)
+  CALL clover_decompose(grid%x_cells,grid%y_cells,left,right,bottom,top,chunk_x,chunk_y)
 
   !create the chunks
       

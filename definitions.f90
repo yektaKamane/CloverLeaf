@@ -207,6 +207,8 @@ MODULE definitions_module
 
   TYPE(chunk_type)       :: chunk
   INTEGER                :: number_of_chunks
+  INTEGER                :: chunk_y
+  INTEGER                :: chunk_x
 
   TYPE(grid_type)        :: grid
 
