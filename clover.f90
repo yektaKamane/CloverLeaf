@@ -899,16 +899,21 @@ CONTAINS
     integer(c_int)         :: left_task
     integer(c_int)         :: total_size, tag_send, tag_recv, err
     integer(c_int)         :: req_send, req_recv
-    integer(c_int)         :: rank, i, failed_size
+    integer(c_int)         :: rank, index, failed_size
     ! i added
     type(c_ptr) :: ptr_snd, ptr_rec
     integer :: status(MPI_STATUS_SIZE)
-
+    integer :: i, j
+    integer, allocatable :: left_chunks(:)
+    integer :: num_left_chunks
     
     ! mirroring
-    do i = 1, total_size
-        left_rcv_buffer(i) = left_snd_buffer(i); 
+    do index = 1, total_size
+        left_rcv_buffer(index) = left_snd_buffer(index); 
     end do
+
+    ! source rank
+    call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
 
     ! destination rank
     left_task =chunk%chunk_neighbours(chunk_left) - 1
@@ -921,13 +926,30 @@ CONTAINS
       ! print *, "chunk_y:", chunk_y
       ! print *, "chunk_x:", chunk_x
 
-    
+        ! Calculate the row (i) and column (j) of the chunk_id
+        i = rank / chunk_x
+        j = mod(rank, chunk_x)
 
-    ! source rank
-    call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
+        ! Allocate the array for the left chunks
+        allocate(left_chunks(num_left_chunks))
+
+        ! Calculate the number of chunks to the left
+        num_left_chunks = j
+
+        ! Fill the array with chunk IDs to the left
+        do while (j > 0)
+          j = j - 1
+          left_chunks(num_left_chunks - j) = i * chunk_x + j
+        end do
 
     ptr_snd = c_loc(left_snd_buffer)
     ptr_rec = c_loc(left_rcv_buffer)
+
+    
+    if (rank == 2) then 
+      left_task = 0
+    endif
+    print *, "sending left from ", rank, " to ", left_task
 
     IF (rank < left_task) then 
     
@@ -1737,6 +1759,15 @@ CONTAINS
     do i = 1, total_size
         right_rcv_buffer(i) = right_snd_buffer(i); 
     end do
+
+    ! print *, right_task
+    if (rank == 0) then 
+      right_task = 2
+    endif
+
+    print *, "sending right from ", rank, " to ", right_task
+
+
 
     IF (rank < right_task) then 
 
