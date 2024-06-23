@@ -941,7 +941,7 @@ CONTAINS
     allocate(left_chunks(num_left_chunks))
         
     ! get a list of all lefts in order of closeness
-    j = num_left_chunks
+    j = col
     do while (j > 0)
       j = j - 1
       left_chunks(num_left_chunks - j) = row * chunk_x + j
@@ -3473,22 +3473,76 @@ CONTAINS
 
     IMPLICIT NONE
 
-    REAL(KIND=8), POINTER :: bottom_snd_buffer(:), bottom_rcv_buffer(:)
-    integer(c_int)      :: bottom_task
-    integer(c_int)      :: total_size, tag_send, tag_recv, err
-    integer(c_int)      :: req_send, req_recv
-    integer(c_int)         :: rank, i
-    ! i added
+    REAL(KIND=8), POINTER  :: bottom_snd_buffer(:), bottom_rcv_buffer(:)
+    integer(c_int)         :: bottom_task
+    integer(c_int)         :: total_size, tag_send, tag_recv, err
+    integer(c_int)         :: req_send, req_recv
+    integer(c_int)         :: rank, index, failed_size
+    integer(c_int)         :: i, j
+    ! new
+    ! pointer to communicate with the c library
     type(c_ptr) :: ptr_snd, ptr_rec
+    ! status for the receive calls
     integer :: status(MPI_STATUS_SIZE)
+    ! current processe's coordinates
+    integer :: row, col
+    ! number of neighboring nodes to the left
+    integer :: num_bottom_chunks
+    ! array to store all the ranks that are left to this node
+    integer, POINTER :: bottom_chunks(:)
+    ! array to store the ranks of failed nodes
+    integer, POINTER :: failed_nodes(:)
+    ! pointer to the above array
+    type(c_ptr) :: failed_ptr
 
-    bottom_task=chunk%chunk_neighbours(chunk_bottom) - 1
+    ! mirroring
+    do index = 1, total_size
+        bottom_rcv_buffer(index) = bottom_snd_buffer(index); 
+    end do
 
+    ! source rank
     call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
 
-    do i = 1, total_size
-        bottom_rcv_buffer(i) = bottom_snd_buffer(i); 
+    ! destination rank
+    bottom_task=chunk%chunk_neighbours(chunk_bottom) - 1
+
+    ! get a list of failed nodes
+    call fort_fault_number(MPI_COMM_WORLD, failed_size)
+    allocate(failed_nodes(failed_size))
+    failed_ptr = c_loc(failed_nodes)
+    call fort_who_failed(MPI_COMM_WORLD, failed_size, failed_ptr)
+
+    ! Calculate the row (i) and column (j) of the chunk_id
+    row = rank / chunk_x
+    col = mod(rank, chunk_x)
+    num_bottom_chunks = chunk_y - i - 1
+    allocate(bottom_chunks(num_bottom_chunks))
+
+    ! get a list of all lefts in order of closeness
+    j = row
+    do while (j < chunk_y - 1)
+      j = j + 1
+      bottom_chunks(j - (rank / chunk_x)) = j * chunk_x  + col
     end do
+
+    i = 1
+    do while (i <= num_bottom_chunks) 
+      j = 1
+      do while (j <= failed_size)
+
+        if (bottom_chunks(i) /= failed_nodes(j)) then
+          bottom_task = bottom_chunks(i)
+          i = num_bottom_chunks + 1
+          EXIT
+        endif
+
+        j = j+1
+      end do
+
+      i = i+1
+    end do
+
+    ! print *, "source: ", rank,  "bottom_task :", bottom_task
 
     ptr_rec = c_loc(bottom_rcv_buffer)
     ptr_snd = c_loc(bottom_snd_buffer)
