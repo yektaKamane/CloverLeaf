@@ -60,10 +60,10 @@ PROGRAM clover_leaf
     WRITE(0,*)
   ENDIF
 
-      call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
-            IF (rank == 1) THEN
-                call raise_sigint_c()
-            ENDIF
+      ! call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
+      !       IF (rank == 1) THEN
+      !           call raise_sigint_c()
+      !       ENDIF
 
   CALL initialise
 

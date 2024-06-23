@@ -4,6 +4,13 @@ module mpi_interface
 
     interface
 
+        subroutine fort_who_failed(Fcomm, size, ranks) bind(C, name="fort_who_failed")
+            use iso_c_binding
+            integer(c_int), value :: Fcomm
+            integer(c_int), intent(out) :: size
+            type(c_ptr), value :: ranks
+        end subroutine fort_who_failed
+
         subroutine fort_fault_number(Fcomm, size) bind(C, name="fort_fault_number")
             use iso_c_binding
             integer(c_int), value :: Fcomm

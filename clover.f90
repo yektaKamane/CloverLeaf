@@ -895,17 +895,27 @@ CONTAINS
                                            req_send, req_recv)
     IMPLICIT NONE
 
-    REAL(KIND=8), POINTER    :: left_snd_buffer(:), left_rcv_buffer(:)
+    REAL(KIND=8), POINTER  :: left_snd_buffer(:), left_rcv_buffer(:)
     integer(c_int)         :: left_task
     integer(c_int)         :: total_size, tag_send, tag_recv, err
     integer(c_int)         :: req_send, req_recv
     integer(c_int)         :: rank, index, failed_size
-    ! i added
+    integer(c_int)         :: i, j
+    ! new
+    ! pointer to communicate with the c library
     type(c_ptr) :: ptr_snd, ptr_rec
+    ! status for the receive calls
     integer :: status(MPI_STATUS_SIZE)
-    integer :: i, j
-    integer, allocatable :: left_chunks(:)
+    ! current processe's coordinates
+    integer :: row, col
+    ! number of neighboring nodes to the left
     integer :: num_left_chunks
+    ! array to store all the ranks that are left to this node
+    integer, POINTER :: left_chunks(:)
+    ! array to store the ranks of failed nodes
+    integer, POINTER :: failed_nodes(:)
+    ! pointer to the above array
+    type(c_ptr) :: failed_ptr
     
     ! mirroring
     do index = 1, total_size
@@ -914,42 +924,51 @@ CONTAINS
 
     ! source rank
     call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
-
+    
     ! destination rank
     left_task =chunk%chunk_neighbours(chunk_left) - 1
 
-    ! check whether left_task has failed
-    ! call fort_fault_number(MPI_COMM_WORLD, failed_size)
-    ! print * , "failed_size", failed_size
+    ! get a list of failed nodes
+    call fort_fault_number(MPI_COMM_WORLD, failed_size)
+    allocate(failed_nodes(failed_size))
+    failed_ptr = c_loc(failed_nodes)
+    call fort_who_failed(MPI_COMM_WORLD, failed_size, failed_ptr)
 
-    ! if failed come up with a list of alternatives (aka, other lefts)
-      ! print *, "chunk_y:", chunk_y
-      ! print *, "chunk_x:", chunk_x
+    ! Calculate the row (i) and column (j) of the chunk_id
+    row = rank / chunk_x
+    col = mod(rank, chunk_x)
+    num_left_chunks = col
+    allocate(left_chunks(num_left_chunks))
+        
+    ! get a list of all lefts in order of closeness
+    j = col
+    do while (j > 0)
+      j = j - 1
+      left_chunks(num_left_chunks - j) = row * chunk_x + j
+    end do
 
-        ! Calculate the row (i) and column (j) of the chunk_id
-        i = rank / chunk_x
-        j = mod(rank, chunk_x)
+    i = 1
+    do while (i <= num_left_chunks) 
+      j = 1
+      do while (j <= failed_size)
 
-        ! Allocate the array for the left chunks
-        allocate(left_chunks(num_left_chunks))
+        if (left_chunks(i) /= failed_nodes(j)) then
+          left_task = left_chunks(i)
+          i = num_left_chunks + 1
+          EXIT
+        endif
 
-        ! Calculate the number of chunks to the left
-        num_left_chunks = j
+        j = j+1
+      end do
 
-        ! Fill the array with chunk IDs to the left
-        do while (j > 0)
-          j = j - 1
-          left_chunks(num_left_chunks - j) = i * chunk_x + j
-        end do
+      i = i+1
+    end do
+
+
+    print *, "source: ", rank,  "left_task :", left_task
 
     ptr_snd = c_loc(left_snd_buffer)
     ptr_rec = c_loc(left_rcv_buffer)
-
-    
-    if (rank == 2) then 
-      left_task = 0
-    endif
-    print *, "sending left from ", rank, " to ", left_task
 
     IF (rank < left_task) then 
     
@@ -1759,14 +1778,6 @@ CONTAINS
     do i = 1, total_size
         right_rcv_buffer(i) = right_snd_buffer(i); 
     end do
-
-    ! print *, right_task
-    if (rank == 0) then 
-      right_task = 2
-    endif
-
-    print *, "sending right from ", rank, " to ", right_task
-
 
 
     IF (rank < right_task) then 

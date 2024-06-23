@@ -62,6 +62,13 @@ SUBROUTINE hydro
         !     ENDIF
         ! ENDIF
 
+        ! IF (step == 4) THEN 
+        !     call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
+        !     IF (rank == 2) THEN
+        !         call raise_sigint_c()
+        !     ENDIF
+        ! ENDIF
+
         ! there are 6 calls to update_halo
 
         CALL timestep() !two of them here
