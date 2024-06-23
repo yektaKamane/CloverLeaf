@@ -964,7 +964,6 @@ CONTAINS
       i = i+1
     end do
 
-
     ! print *, "source: ", rank,  "left_task :", left_task
 
     ptr_snd = c_loc(left_snd_buffer)
@@ -2620,21 +2619,75 @@ CONTAINS
     integer(c_int)      :: top_task
     integer(c_int)      :: total_size, tag_send, tag_recv, err
     integer(c_int)      :: req_send, req_recv
-    integer(c_int)         :: rank, i
-    ! i added
+    integer(c_int)         :: rank, index, failed_size
+    integer(c_int)         :: i, j
+    ! new
+    ! pointer to communicate with the c library
     type(c_ptr) :: ptr_snd, ptr_rec
+    ! status for the receive calls
     integer :: status(MPI_STATUS_SIZE)
+    ! current processe's coordinates
+    integer :: row, col
+    ! number of neighboring nodes to the left
+    integer :: num_top_chunks
+    ! array to store all the ranks that are left to this node
+    integer, POINTER :: top_chunks(:)
+    ! array to store the ranks of failed nodes
+    integer, POINTER :: failed_nodes(:)
+    ! pointer to the above array
+    type(c_ptr) :: failed_ptr
 
-    top_task=chunk%chunk_neighbours(chunk_top) - 1
-
-    ptr_snd = c_loc(top_snd_buffer)
-    ptr_rec = c_loc(top_rcv_buffer)
-
-    call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
-    
+    ! mirroring
     do i = 1, total_size
         top_rcv_buffer(i) = top_snd_buffer(i); 
     end do
+
+    ! source rank
+    call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
+
+    ! destination rank
+    top_task=chunk%chunk_neighbours(chunk_top) - 1
+
+    ! get a list of failed nodes
+    call fort_fault_number(MPI_COMM_WORLD, failed_size)
+    allocate(failed_nodes(failed_size))
+    failed_ptr = c_loc(failed_nodes)
+    call fort_who_failed(MPI_COMM_WORLD, failed_size, failed_ptr)
+
+    ! Calculate the row (i) and column (j) of the chunk_id
+    row = rank / chunk_x
+    col = mod(rank, chunk_x)
+    num_top_chunks = row
+    allocate(top_chunks(num_top_chunks))
+
+    ! get a list of all lefts in order of closeness
+    j = num_top_chunks
+    do while (j > 0)
+      j = j - 1
+      top_chunks(num_top_chunks - j) = j * chunk_x + col
+    end do
+
+    i = 1
+    do while (i <= num_top_chunks) 
+      j = 1
+      do while (j <= failed_size)
+
+        if (top_chunks(i) /= failed_nodes(j)) then
+          top_task = top_chunks(i)
+          i = num_top_chunks + 1
+          EXIT
+        endif
+
+        j = j+1
+      end do
+
+      i = i+1
+    end do
+
+    ! print *, "source: ", rank,  "top_task :", top_task
+
+    ptr_snd = c_loc(top_snd_buffer)
+    ptr_rec = c_loc(top_rcv_buffer)
 
     IF (rank < top_task) then 
 
