@@ -919,12 +919,12 @@ CONTAINS
     
     ! mirroring
     do index = 1, total_size
-        left_rcv_buffer(index) = left_snd_buffer(index); 
+      left_rcv_buffer(index) = left_snd_buffer(index)
     end do
 
     ! source rank
     call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
-    
+
     ! destination rank
     left_task =chunk%chunk_neighbours(chunk_left) - 1
 
@@ -941,7 +941,7 @@ CONTAINS
     allocate(left_chunks(num_left_chunks))
         
     ! get a list of all lefts in order of closeness
-    j = col
+    j = num_left_chunks
     do while (j > 0)
       j = j - 1
       left_chunks(num_left_chunks - j) = row * chunk_x + j
@@ -965,7 +965,7 @@ CONTAINS
     end do
 
 
-    print *, "source: ", rank,  "left_task :", left_task
+    ! print *, "source: ", rank,  "left_task :", left_task
 
     ptr_snd = c_loc(left_snd_buffer)
     ptr_rec = c_loc(left_rcv_buffer)
@@ -1760,25 +1760,78 @@ CONTAINS
     IMPLICIT NONE
 
     REAL(KIND=8), POINTER :: right_snd_buffer(:), right_rcv_buffer(:)
-    integer(c_int)      :: right_task
-    integer(c_int)      :: total_size, tag_send, tag_recv, err
-    integer(c_int)      :: req_send, req_recv
-    integer(c_int)         :: rank, i
-    ! i added
+    integer(c_int)        :: right_task
+    integer(c_int)        :: total_size, tag_send, tag_recv, err
+    integer(c_int)        :: req_send, req_recv
+    integer(c_int)         :: rank, index, failed_size
+    integer(c_int)         :: i, j
+    ! new
+    ! pointer to communicate with the c library
     type(c_ptr) :: ptr_snd, ptr_rec
+    ! status for the receive calls
     integer :: status(MPI_STATUS_SIZE)
+    ! current processe's coordinates
+    integer :: row, col
+    ! number of neighboring nodes to the right
+    integer :: num_right_chunks
+    ! array to store all the ranks that are right to this node
+    integer, POINTER :: right_chunks(:)
+    ! array to store the ranks of failed nodes
+    integer, POINTER :: failed_nodes(:)
+    ! pointer to the above array
+    type(c_ptr) :: failed_ptr
 
+    ! mirroring
+    do index = 1, total_size
+      right_rcv_buffer(index) = right_snd_buffer(index)
+    end do
+
+    ! source rank
+    call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
+
+    ! destination rank
     right_task=chunk%chunk_neighbours(chunk_right) - 1
+
+    ! get a list of failed nodes
+    call fort_fault_number(MPI_COMM_WORLD, failed_size)
+    allocate(failed_nodes(failed_size))
+    failed_ptr = c_loc(failed_nodes)
+    call fort_who_failed(MPI_COMM_WORLD, failed_size, failed_ptr)
+
+    ! Calculate the row and column of the chunk_id
+    row = rank / chunk_x
+    col = mod(rank, chunk_x)
+    num_right_chunks = chunk_x - col - 1
+    allocate(right_chunks(num_right_chunks))
+
+    ! get a list of all lefts in order of closeness
+    j = col
+    do while (j < chunk_x - 1)
+      j = j + 1
+      right_chunks(j - (rank - row * chunk_x)) = row * chunk_x + j
+    end do
+
+    i = 1
+    do while (i <= num_right_chunks) 
+      j = 1
+      do while (j <= failed_size)
+
+        if (right_chunks(i) /= failed_nodes(j)) then
+          right_task = right_chunks(i)
+          i = num_right_chunks + 1
+          EXIT
+        endif
+
+        j = j+1
+      end do
+
+      i = i+1
+    end do
+
+    ! print *, "source: ", rank,  "right_task :", right_task
 
     ptr_snd = c_loc(right_snd_buffer)
     ptr_rec = c_loc(right_rcv_buffer)
-
-    call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
-
-    do i = 1, total_size
-        right_rcv_buffer(i) = right_snd_buffer(i); 
-    end do
-
 
     IF (rank < right_task) then 
 
