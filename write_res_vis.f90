@@ -49,8 +49,14 @@ SUBROUTINE write_my_energy(current_timestep)
 END SUBROUTINE
 
 
-SUBROUTINE save_initial_state(buffer)
+SUBROUTINE save_initial_state(buffer_src, buffer_dst, size)
 
-    REAL(KIND=8), POINTER :: buffer(:)
+    integer               :: size, i
+    REAL(KIND=8), POINTER :: buffer_src(:), buffer_dst(:)
+
+    do i=1, size
+        buffer_dst(i) = buffer_src(i)
+        print *, buffer_dst(i)
+    end do
 
 END SUBROUTINE

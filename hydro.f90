@@ -42,11 +42,23 @@ SUBROUTINE hydro
     REAL(KIND=8)    :: first_step,second_step
     REAL(KIND=8)    :: kernel_total,totals(parallel%max_task)
 
-    integer(c_int) :: rank, err, failed_size
+    integer(c_int) :: rank, err, failed_size, i
+    integer(c_int) :: y_size, x_size
+
+    y_size = 10*2*(chunk%y_max+5)
+    x_size = 10*2*(chunk%x_max+5)
+
+    do i=1, y_size
+        chunk%init_left_buffer(i)  = chunk%left_snd_buffer(i)
+        chunk%init_right_buffer(i) = chunk%right_snd_buffer(i)
+    end do
+
+    do i=1, x_size
+        chunk%init_bottom_buffer(i)  = chunk%bottom_snd_buffer(i)
+        chunk%init_top_buffer(i) = chunk%top_snd_buffer(i)
+    end do
 
     timerstart = timer()
-
-    ! CALL save_initial_state(chunk%bottom_snd_buffer)
 
     DO
         step_time = timer()

@@ -344,18 +344,22 @@ CONTAINS
       !IF(chunk%chunk_neighbours(chunk_left).NE.external_face) THEN
       ALLOCATE(chunk%left_snd_buffer(10*2*(chunk%y_max+5)))
       ALLOCATE(chunk%left_rcv_buffer(10*2*(chunk%y_max+5)))
+      ALLOCATE(chunk%init_left_buffer(10*2*(chunk%y_max+5)))
       !ENDIF
       !IF(chunk%chunk_neighbours(chunk_right).NE.external_face) THEN
       ALLOCATE(chunk%right_snd_buffer(10*2*(chunk%y_max+5)))
       ALLOCATE(chunk%right_rcv_buffer(10*2*(chunk%y_max+5)))
+      ALLOCATE(chunk%init_right_buffer(10*2*(chunk%y_max+5)))
       !ENDIF
       !IF(chunk%chunk_neighbours(chunk_bottom).NE.external_face) THEN
       ALLOCATE(chunk%bottom_snd_buffer(10*2*(chunk%x_max+5)))
       ALLOCATE(chunk%bottom_rcv_buffer(10*2*(chunk%x_max+5)))
+      ALLOCATE(chunk%init_bottom_buffer(10*2*(chunk%x_max+5)))
       !ENDIF
       !IF(chunk%chunk_neighbours(chunk_top).NE.external_face) THEN
       ALLOCATE(chunk%top_snd_buffer(10*2*(chunk%x_max+5)))
       ALLOCATE(chunk%top_rcv_buffer(10*2*(chunk%x_max+5)))
+      ALLOCATE(chunk%init_top_buffer(10*2*(chunk%x_max+5)))
       !ENDIF
     ENDIF
 
@@ -921,6 +925,11 @@ CONTAINS
     ! mirroring
     do index = 1, total_size
       left_rcv_buffer(index) = left_snd_buffer(index)
+    end do
+
+    ! default to inital value
+    do index = 1, total_size
+      left_rcv_buffer(index) = chunk%init_left_buffer(index)
     end do
 
     ! source rank
@@ -1805,6 +1814,11 @@ CONTAINS
       right_rcv_buffer(index) = right_snd_buffer(index)
     end do
 
+    ! default to inital value
+    do index = 1, total_size
+      right_rcv_buffer(index) = chunk%init_right_buffer(index)
+    end do
+
     ! source rank
     call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
 
@@ -2678,8 +2692,13 @@ CONTAINS
     type(c_ptr) :: failed_ptr
 
     ! mirroring
-    do i = 1, total_size
-        top_rcv_buffer(i) = top_snd_buffer(i); 
+    do index = 1, total_size
+        top_rcv_buffer(index) = top_snd_buffer(index); 
+    end do
+
+    ! default to inital value
+    do index = 1, total_size
+        top_rcv_buffer(index) = chunk%init_top_buffer(index)
     end do
 
     ! source rank
@@ -3558,6 +3577,11 @@ CONTAINS
     ! mirroring
     do index = 1, total_size
         bottom_rcv_buffer(index) = bottom_snd_buffer(index); 
+    end do
+
+    ! default to inital value
+    do index = 1, total_size
+        bottom_rcv_buffer(index) = chunk%init_bottom_buffer(index); 
     end do
 
     ! source rank
