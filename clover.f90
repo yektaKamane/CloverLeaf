@@ -901,6 +901,7 @@ CONTAINS
     integer(c_int)         :: req_send, req_recv
     integer(c_int)         :: rank, index, failed_size
     integer(c_int)         :: i, j
+    integer(c_int)         :: x, x0, x1
     ! new
     ! pointer to communicate with the c library
     type(c_ptr) :: ptr_snd, ptr_rec
@@ -986,8 +987,26 @@ CONTAINS
         ,MPI_COMM_WORLD,err)
 
     ENDIF
-    
 
+    ! interpolation
+    ! y = y0 + (y1-y0)/(x1-x0) * (x-x0)
+    ! y  : the new value on the receive buffer
+    ! y0 : the current value on the send buffer
+    ! y1 : the current value on the receive buffer
+    ! x  : the missing node (of the left side, x = source - 1)
+    ! x0 : the current node (source)
+    ! x1 : the destination node
+
+    x = rank - 1
+    x0 = rank
+    x1 = left_task
+
+    if (x < x0 .and. x > x1) then
+      do index = 1, total_size
+        left_rcv_buffer(index) = left_rcv_buffer(index) + (left_rcv_buffer(index) - left_snd_buffer(index))/(x1-x0)*(x-x0)
+      end do
+    endif
+    
   END SUBROUTINE clover_send_recv_message_left
 
   SUBROUTINE clover_unpack_left(fields, tile, depth,                         &
@@ -1758,12 +1777,13 @@ CONTAINS
 
     IMPLICIT NONE
 
-    REAL(KIND=8), POINTER :: right_snd_buffer(:), right_rcv_buffer(:)
-    integer(c_int)        :: right_task
-    integer(c_int)        :: total_size, tag_send, tag_recv, err
-    integer(c_int)        :: req_send, req_recv
+    REAL(KIND=8), POINTER  :: right_snd_buffer(:), right_rcv_buffer(:)
+    integer(c_int)         :: right_task
+    integer(c_int)         :: total_size, tag_send, tag_recv, err
+    integer(c_int)         :: req_send, req_recv
     integer(c_int)         :: rank, index, failed_size
     integer(c_int)         :: i, j
+    integer(c_int)         :: x, x0, x1
     ! new
     ! pointer to communicate with the c library
     type(c_ptr) :: ptr_snd, ptr_rec
@@ -1849,6 +1869,25 @@ CONTAINS
         MPI_COMM_WORLD,err)
 
     ENDIF
+
+    ! interpolation
+    ! y = y0 + (y1-y0)/(x1-x0) * (x-x0)
+    ! y  : the new value on the receive buffer
+    ! y0 : the current value on the send buffer
+    ! y1 : the current value on the receive buffer
+    ! x  : the missing node (of the right side, x = source + 1)
+    ! x0 : the current node (source)
+    ! x1 : the destination node
+
+    x = rank + 1
+    x0 = rank
+    x1 = right_task
+
+    if (x > x0 .and. x < x1) then
+      do index = 1, total_size
+        right_rcv_buffer(index) = right_rcv_buffer(index) + (right_rcv_buffer(index) - right_snd_buffer(index))/(x1-x0)*(x-x0)
+      end do
+    endif
 
 
   END SUBROUTINE clover_send_recv_message_right
@@ -2621,6 +2660,7 @@ CONTAINS
     integer(c_int)      :: req_send, req_recv
     integer(c_int)         :: rank, index, failed_size
     integer(c_int)         :: i, j
+    integer(c_int)         :: x, x0, x1
     ! new
     ! pointer to communicate with the c library
     type(c_ptr) :: ptr_snd, ptr_rec
@@ -2706,6 +2746,25 @@ CONTAINS
             MPI_COMM_WORLD,err)
 
     ENDIF
+
+    ! interpolation
+    ! y = y0 + (y1-y0)/(x1-x0) * (x-x0)
+    ! y  : the new value on the receive buffer
+    ! y0 : the current value on the send buffer
+    ! y1 : the current value on the receive buffer
+    ! x  : the missing node (of the top side, x = source - 1)
+    ! x0 : the current node (source)
+    ! x1 : the destination node
+
+    x = rank - 1
+    x0 = rank
+    x1 = top_task
+
+    if (x < x0 .and. x > x1) then
+      do index = 1, total_size
+        top_rcv_buffer(index) = top_rcv_buffer(index) + (top_rcv_buffer(index) - top_snd_buffer(index))/(x1-x0)*(x-x0)
+      end do
+    endif
 
   END SUBROUTINE clover_send_recv_message_top
 
@@ -3479,6 +3538,7 @@ CONTAINS
     integer(c_int)         :: req_send, req_recv
     integer(c_int)         :: rank, index, failed_size
     integer(c_int)         :: i, j
+    integer(c_int)         :: x, x0, x1
     ! new
     ! pointer to communicate with the c library
     type(c_ptr) :: ptr_snd, ptr_rec
@@ -3564,6 +3624,25 @@ CONTAINS
           ,MPI_COMM_WORLD,err) 
 
     ENDIF
+
+    ! interpolation
+    ! y = y0 + (y1-y0)/(x1-x0) * (x-x0)
+    ! y  : the new value on the receive buffer
+    ! y0 : the current value on the send buffer
+    ! y1 : the current value on the receive buffer
+    ! x  : the missing node (of the bottom side, x = source + 1)
+    ! x0 : the current node (source)
+    ! x1 : the destination node
+
+    x = rank + 1
+    x0 = rank
+    x1 = bottom_task
+
+    if (x > x0 .and. x < x1) then
+      do index = 1, total_size
+        bottom_rcv_buffer(index) = bottom_rcv_buffer(index) + (bottom_rcv_buffer(index) - bottom_snd_buffer(index))/(x1-x0)*(x-x0)
+      end do
+    endif
 
   END SUBROUTINE clover_send_recv_message_bottom
 
