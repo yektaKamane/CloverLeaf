@@ -89,7 +89,7 @@ Clover Version    1.300
 
  Time   0.10810846149316460     
                        Volume            Mass         Density        Pressure Internal Energy  Kinetic Energy    Total Energy
- step:     10      0.9375E+02      0.1916E+02      0.2044E+00      0.8462E-01      0.1983E+02      0.9623E-01      0.1993E+02
+ step:     10      0.9375E+02      0.1915E+02      0.2043E+00      0.8455E-01      0.1982E+02      0.9792E-01      0.1991E+02
 
  Step      11 time   0.1081085 control    sound    timestep   1.16E-02       1,       1 x  1.04E-02 y  1.04E-02
  Step      12 time   0.1196676 control    sound    timestep   1.15E-02       1,       1 x  1.04E-02 y  1.04E-02
@@ -104,7 +104,7 @@ Clover Version    1.300
 
  Time   0.22400083163136136     
                        Volume            Mass         Density        Pressure Internal Energy  Kinetic Energy    Total Energy
- step:     20      0.9375E+02      0.1916E+02      0.2044E+00      0.8424E-01      0.1974E+02      0.1850E+00      0.1993E+02
+ step:     20      0.9375E+02      0.1913E+02      0.2041E+00      0.8408E-01      0.1971E+02      0.1881E+00      0.1989E+02
 
  Step      21 time   0.2240008 control    sound    timestep   1.16E-02       1,       1 x  1.04E-02 y  1.04E-02
  Step      22 time   0.2356285 control    sound    timestep   1.16E-02       1,       1 x  1.04E-02 y  1.04E-02
@@ -112,159 +112,159 @@ Clover Version    1.300
  Step      24 time   0.2588920 control    sound    timestep   1.16E-02       1,       1 x  1.04E-02 y  1.04E-02
  Step      25 time   0.2705283 control    sound    timestep   1.16E-02       1,       1 x  1.04E-02 y  1.04E-02
  Step      26 time   0.2821685 control    sound    timestep   1.16E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      27 time   0.2938132 control    sound    timestep   1.17E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      28 time   0.3054647 control    sound    timestep   1.17E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      29 time   0.3171253 control    sound    timestep   1.17E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      30 time   0.3288005 control    sound    timestep   1.17E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      27 time   0.2938132 control    sound    timestep   1.14E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      28 time   0.3051713 control    sound    timestep   1.08E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      29 time   0.3159402 control    sound    timestep   1.02E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      30 time   0.3261428 control    sound    timestep   9.63E-03       1,       1 x  1.04E-02 y  1.04E-02
 
- Time   0.34049941256121391     
+ Time   0.33577387629594307     
                        Volume            Mass         Density        Pressure Internal Energy  Kinetic Energy    Total Energy
- step:     30      0.9375E+02      0.1916E+02      0.2044E+00      0.8395E-01      0.1968E+02      0.2522E+00      0.1993E+02
+ step:     30      0.9375E+02      0.1912E+02      0.2039E+00      0.8371E-01      0.1962E+02      0.2585E+00      0.1988E+02
 
- Step      31 time   0.3404994 control    sound    timestep   1.17E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      32 time   0.3522354 control    sound    timestep   1.18E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      33 time   0.3640207 control    sound    timestep   1.18E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      34 time   0.3758622 control    sound    timestep   1.19E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      35 time   0.3877662 control    sound    timestep   1.17E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      36 time   0.3994936 control    sound    timestep   1.04E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      37 time   0.4098521 control    sound    timestep   1.21E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      38 time   0.4219411 control    sound    timestep   1.06E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      39 time   0.4325567 control    sound    timestep   1.16E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      40 time   0.4442016 control    sound    timestep   1.23E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      31 time   0.3357739 control    sound    timestep   9.20E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      32 time   0.3449779 control    sound    timestep   8.86E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      33 time   0.3538414 control    sound    timestep   8.57E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      34 time   0.3624068 control    sound    timestep   8.23E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      35 time   0.3706394 control    sound    timestep   7.99E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      36 time   0.3786320 control    sound    timestep   7.77E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      37 time   0.3864049 control    sound    timestep   7.42E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      38 time   0.3938263 control    sound    timestep   6.84E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      39 time   0.4006668 control    sound    timestep   6.69E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      40 time   0.4073605 control    sound    timestep   6.84E-03       1,       1 x  1.04E-02 y  1.04E-02
 
- Time   0.45649754297237488     
+ Time   0.41419967364453114     
                        Volume            Mass         Density        Pressure Internal Energy  Kinetic Energy    Total Energy
- step:     40      0.9375E+02      0.1916E+02      0.2044E+00      0.8381E-01      0.1964E+02      0.2781E+00      0.1992E+02
+ step:     40      0.9375E+02      0.1911E+02      0.2038E+00      0.8346E-01      0.1956E+02      0.2927E+00      0.1985E+02
 
- Step      41 time   0.4564975 control    sound    timestep   1.24E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      42 time   0.4688568 control    sound    timestep   1.24E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      43 time   0.4812753 control    sound    timestep   1.25E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      44 time   0.4937497 control    sound    timestep   1.25E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      45 time   0.5062765 control    sound    timestep   1.26E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      46 time   0.5188547 control    sound    timestep   1.26E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      47 time   0.5314841 control    sound    timestep   1.27E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      48 time   0.5441740 control    sound    timestep   1.28E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      49 time   0.5569467 control    sound    timestep   1.29E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      50 time   0.5698268 control    sound    timestep   1.30E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      41 time   0.4141997 control    sound    timestep   7.06E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      42 time   0.4212575 control    sound    timestep   7.24E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      43 time   0.4285007 control    sound    timestep   7.41E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      44 time   0.4359101 control    sound    timestep   7.51E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      45 time   0.4434249 control    sound    timestep   7.63E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      46 time   0.4510586 control    sound    timestep   7.72E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      47 time   0.4587804 control    sound    timestep   7.85E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      48 time   0.4666313 control    sound    timestep   7.94E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      49 time   0.4745729 control    sound    timestep   8.08E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      50 time   0.4826497 control    sound    timestep   8.16E-03       1,       1 x  1.04E-02 y  1.04E-02
 
- Time   0.58282120680006955     
+ Time   0.49081355674941468     
                        Volume            Mass         Density        Pressure Internal Energy  Kinetic Energy    Total Energy
- step:     50      0.9375E+02      0.1915E+02      0.2043E+00      0.8377E-01      0.1963E+02      0.2547E+00      0.1989E+02
+ step:     50      0.9375E+02      0.1908E+02      0.2035E+00      0.8324E-01      0.1951E+02      0.2939E+00      0.1980E+02
 
- Step      51 time   0.5828212 control    sound    timestep   1.31E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      52 time   0.5959592 control    sound    timestep   1.33E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      53 time   0.6092709 control    sound    timestep   1.35E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      54 time   0.6227608 control    sound    timestep   1.36E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      55 time   0.6363609 control    sound    timestep   1.36E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      56 time   0.6499483 control    sound    timestep   1.37E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      57 time   0.6636738 control    sound    timestep   1.38E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      58 time   0.6774284 control    sound    timestep   1.33E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      59 time   0.6906948 control    sound    timestep   1.30E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      60 time   0.7036955 control    sound    timestep   1.30E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      51 time   0.4908136 control    sound    timestep   8.30E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      52 time   0.4991149 control    sound    timestep   8.39E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      53 time   0.5075012 control    sound    timestep   8.53E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      54 time   0.5160275 control    sound    timestep   8.61E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      55 time   0.5246374 control    sound    timestep   8.75E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      56 time   0.5333885 control    sound    timestep   8.83E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      57 time   0.5422213 control    sound    timestep   8.97E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      58 time   0.5511878 control    sound    timestep   9.04E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      59 time   0.5602320 control    sound    timestep   9.16E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      60 time   0.5693938 control    sound    timestep   9.23E-03       1,       1 x  1.04E-02 y  1.04E-02
 
- Time   0.71669422277985506     
+ Time   0.57862760838468219     
                        Volume            Mass         Density        Pressure Internal Energy  Kinetic Energy    Total Energy
- step:     60      0.9375E+02      0.1914E+02      0.2041E+00      0.8380E-01      0.1964E+02      0.2186E+00      0.1986E+02
+ step:     60      0.9375E+02      0.1905E+02      0.2032E+00      0.8304E-01      0.1946E+02      0.2779E+00      0.1974E+02
 
- Step      61 time   0.7166942 control    sound    timestep   1.31E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      62 time   0.7298129 control    sound    timestep   1.23E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      63 time   0.7421181 control    sound    timestep   1.19E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      64 time   0.7539993 control    sound    timestep   1.22E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      65 time   0.7661810 control    sound    timestep   1.35E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      66 time   0.7796524 control    sound    timestep   1.30E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      67 time   0.7926067 control    sound    timestep   1.27E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      68 time   0.8052926 control    sound    timestep   1.28E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      69 time   0.8180686 control    sound    timestep   1.31E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      70 time   0.8311837 control    sound    timestep   1.24E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      61 time   0.5786276 control    sound    timestep   9.35E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      62 time   0.5879745 control    sound    timestep   9.42E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      63 time   0.5973898 control    sound    timestep   9.52E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      64 time   0.6069091 control    sound    timestep   9.58E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      65 time   0.6164906 control    sound    timestep   9.67E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      66 time   0.6261599 control    sound    timestep   9.72E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      67 time   0.6358828 control    sound    timestep   9.79E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      68 time   0.6456732 control    sound    timestep   9.85E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      69 time   0.6555248 control    sound    timestep   9.86E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      70 time   0.6653883 control    sound    timestep   9.96E-03       1,       1 x  1.04E-02 y  1.04E-02
 
- Time   0.84359866480615819     
+ Time   0.67534389853464349     
                        Volume            Mass         Density        Pressure Internal Energy  Kinetic Energy    Total Energy
- step:     70      0.9375E+02      0.1913E+02      0.2040E+00      0.8383E-01      0.1965E+02      0.1920E+00      0.1984E+02
+ step:     70      0.9375E+02      0.1902E+02      0.2028E+00      0.8286E-01      0.1942E+02      0.2526E+00      0.1967E+02
 
- Step      71 time   0.8435987 control    sound    timestep   1.20E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      72 time   0.8555567 control    sound    timestep   1.18E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      73 time   0.8673770 control    sound    timestep   1.26E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      74 time   0.8799413 control    sound    timestep   1.29E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      75 time   0.8928619 control    sound    timestep   1.25E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      76 time   0.9053120 control    sound    timestep   1.22E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      77 time   0.9175067 control    sound    timestep   1.23E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      78 time   0.9298263 control    sound    timestep   1.21E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      79 time   0.9418991 control    sound    timestep   1.14E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      80 time   0.9533049 control    sound    timestep   1.13E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      71 time   0.6753439 control    sound    timestep   9.95E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      72 time   0.6852975 control    sound    timestep   1.00E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      73 time   0.6953420 control    sound    timestep   9.98E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step      74 time   0.7053240 control    sound    timestep   1.01E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      75 time   0.7154286 control    sound    timestep   1.00E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      76 time   0.7254569 control    sound    timestep   1.01E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      77 time   0.7355815 control    sound    timestep   1.01E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      78 time   0.7456433 control    sound    timestep   1.02E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      79 time   0.7558127 control    sound    timestep   1.01E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      80 time   0.7658889 control    sound    timestep   1.02E-02       1,       1 x  1.04E-02 y  1.04E-02
 
- Time   0.96457485972339707     
+ Time   0.77607437747563213     
                        Volume            Mass         Density        Pressure Internal Energy  Kinetic Energy    Total Energy
- step:     80      0.9375E+02      0.1912E+02      0.2040E+00      0.8384E-01      0.1965E+02      0.1799E+00      0.1983E+02
+ step:     80      0.9375E+02      0.1898E+02      0.2025E+00      0.8267E-01      0.1938E+02      0.2276E+00      0.1960E+02
 
- Step      81 time   0.9645749 control    sound    timestep   1.12E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      82 time   0.9757572 control    sound    timestep   1.20E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      83 time   0.9877911 control    sound    timestep   1.26E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      84 time   1.0004132 control    sound    timestep   1.19E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      85 time   1.0123164 control    sound    timestep   1.15E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      86 time   1.0238302 control    sound    timestep   1.12E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      87 time   1.0350423 control    sound    timestep   1.23E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      88 time   1.0472973 control    sound    timestep   1.24E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      89 time   1.0597178 control    sound    timestep   1.21E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      90 time   1.0718174 control    sound    timestep   1.14E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      81 time   0.7760744 control    sound    timestep   1.01E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      82 time   0.7861978 control    sound    timestep   1.02E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      83 time   0.7964175 control    sound    timestep   1.01E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      84 time   0.8065302 control    sound    timestep   1.02E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      85 time   0.8167638 control    sound    timestep   1.02E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      86 time   0.8269185 control    sound    timestep   1.03E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      87 time   0.8371702 control    sound    timestep   1.01E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      88 time   0.8473076 control    sound    timestep   1.03E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      89 time   0.8575758 control    sound    timestep   1.02E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      90 time   0.8677408 control    sound    timestep   1.03E-02       1,       1 x  1.04E-02 y  1.04E-02
 
- Time    1.0832504554260018     
+ Time   0.87801655884432717     
                        Volume            Mass         Density        Pressure Internal Energy  Kinetic Energy    Total Energy
- step:     90      0.9375E+02      0.1912E+02      0.2039E+00      0.8383E-01      0.1965E+02      0.1784E+00      0.1983E+02
+ step:     90      0.9375E+02      0.1895E+02      0.2021E+00      0.8248E-01      0.1933E+02      0.2054E+00      0.1954E+02
 
- Step      91 time   1.0832505 control    sound    timestep   1.10E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      92 time   1.0942774 control    sound    timestep   1.21E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      93 time   1.1063306 control    sound    timestep   1.24E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      94 time   1.1187711 control    sound    timestep   1.22E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      95 time   1.1309626 control    sound    timestep   1.23E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      96 time   1.1433039 control    sound    timestep   1.25E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      97 time   1.1558445 control    sound    timestep   1.21E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      98 time   1.1679492 control    sound    timestep   1.18E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step      99 time   1.1797337 control    sound    timestep   1.24E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     100 time   1.1921025 control    sound    timestep   1.23E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      91 time   0.8780166 control    sound    timestep   1.02E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      92 time   0.8881736 control    sound    timestep   1.03E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      93 time   0.8984910 control    sound    timestep   1.02E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      94 time   0.9087035 control    sound    timestep   1.04E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      95 time   0.9191245 control    sound    timestep   1.02E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      96 time   0.9293744 control    sound    timestep   1.05E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      97 time   0.9399047 control    sound    timestep   1.04E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      98 time   0.9502757 control    sound    timestep   1.06E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step      99 time   0.9608268 control    sound    timestep   1.04E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     100 time   0.9711957 control    sound    timestep   1.05E-02       1,       1 x  1.04E-02 y  1.04E-02
 
- Time    1.2044466473006321     
+ Time   0.98174275273361700     
                        Volume            Mass         Density        Pressure Internal Energy  Kinetic Energy    Total Energy
- step:    100      0.9375E+02      0.1912E+02      0.2040E+00      0.8382E-01      0.1965E+02      0.1822E+00      0.1983E+02
+ step:    100      0.9375E+02      0.1891E+02      0.2017E+00      0.8231E-01      0.1929E+02      0.1846E+00      0.1948E+02
 
- Step     101 time   1.2044466 control    sound    timestep   1.24E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     102 time   1.2168190 control    sound    timestep   1.23E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     103 time   1.2291098 control    sound    timestep   1.20E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     104 time   1.2410846 control    sound    timestep   1.18E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     105 time   1.2529097 control    sound    timestep   1.14E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     106 time   1.2642835 control    sound    timestep   1.12E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     107 time   1.2754694 control    sound    timestep   1.11E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     108 time   1.2865830 control    sound    timestep   1.08E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     109 time   1.2973967 control    sound    timestep   1.08E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     110 time   1.3081952 control    sound    timestep   1.08E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     101 time   0.9817428 control    sound    timestep   1.03E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     102 time   0.9920908 control    sound    timestep   1.06E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     103 time   1.0026424 control    sound    timestep   1.04E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     104 time   1.0129943 control    sound    timestep   1.06E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     105 time   1.0235567 control    sound    timestep   1.04E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     106 time   1.0339284 control    sound    timestep   1.05E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     107 time   1.0444729 control    sound    timestep   1.04E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     108 time   1.0548485 control    sound    timestep   1.05E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     109 time   1.0653856 control    sound    timestep   1.03E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     110 time   1.0757118 control    sound    timestep   1.05E-02       1,       1 x  1.04E-02 y  1.04E-02
 
- Time    1.3189495277103065     
+ Time    1.0862272156608734     
                        Volume            Mass         Density        Pressure Internal Energy  Kinetic Energy    Total Energy
- step:    110      0.9375E+02      0.1912E+02      0.2040E+00      0.8383E-01      0.1965E+02      0.1877E+00      0.1984E+02
+ step:    110      0.9375E+02      0.1888E+02      0.2014E+00      0.8216E-01      0.1926E+02      0.1670E+00      0.1942E+02
 
- Step     111 time   1.3189495 control    sound    timestep   1.07E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     112 time   1.3296926 control    sound    timestep   1.07E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     113 time   1.3403753 control    sound    timestep   1.07E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     114 time   1.3510439 control    sound    timestep   1.06E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     115 time   1.3616125 control    sound    timestep   1.04E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     116 time   1.3719888 control    sound    timestep   1.03E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     117 time   1.3822477 control    sound    timestep   1.02E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     118 time   1.3924270 control    sound    timestep   1.01E-02       1,       1 x  1.04E-02 y  1.04E-02
- Step     119 time   1.4024957 control    sound    timestep   9.93E-03       1,       1 x  1.04E-02 y  1.04E-02
- Step     120 time   1.4124257 control    sound    timestep   9.88E-03       1,       1 x  1.04E-02 y  1.04E-02
+ Step     111 time   1.0862272 control    sound    timestep   1.03E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     112 time   1.0965139 control    sound    timestep   1.05E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     113 time   1.1070168 control    sound    timestep   1.03E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     114 time   1.1172740 control    sound    timestep   1.05E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     115 time   1.1277698 control    sound    timestep   1.02E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     116 time   1.1380009 control    sound    timestep   1.05E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     117 time   1.1484920 control    sound    timestep   1.02E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     118 time   1.1586974 control    sound    timestep   1.05E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     119 time   1.1691909 control    sound    timestep   1.02E-02       1,       1 x  1.04E-02 y  1.04E-02
+ Step     120 time   1.1794094 control    sound    timestep   1.05E-02       1,       1 x  1.04E-02 y  1.04E-02
 
- Time    1.4223051514035017     
+ Time    1.1899227829800847     
                        Volume            Mass         Density        Pressure Internal Energy  Kinetic Energy    Total Energy
- step:    120      0.9375E+02      0.1913E+02      0.2040E+00      0.8387E-01      0.1966E+02      0.1925E+00      0.1985E+02
+ step:    120      0.9375E+02      0.1886E+02      0.2012E+00      0.8204E-01      0.1923E+02      0.1535E+00      0.1938E+02
 
 
- Time    1.4223051514035017     
+ Time    1.1899227829800847     
                        Volume            Mass         Density        Pressure Internal Energy  Kinetic Energy    Total Energy
- step:    120      0.9375E+02      0.1913E+02      0.2040E+00      0.8387E-01      0.1966E+02      0.1925E+00      0.1985E+02
+ step:    120      0.9375E+02      0.1886E+02      0.2012E+00      0.8204E-01      0.1923E+02      0.1535E+00      0.1938E+02
 
-Test problem   2 is within   0.8386836E+02% of the expected solution
+Test problem   2 is within   0.8713647E+02% of the expected solution
  This is test is considered NOT PASSED
 
  Calculation complete
  Clover is finishing
- Wall clock    14.037840127944946     
- First step overhead  -1.3260126113891602E-002
+ Wall clock    59.622149944305420     
+ First step overhead   9.8791122436523438E-003

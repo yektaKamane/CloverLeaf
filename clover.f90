@@ -379,12 +379,14 @@ CONTAINS
     integer(c_int)      :: message_count,err
     integer(c_int)      :: status(MPI_STATUS_SIZE,4)
     integer(c_int)      :: end_pack_index_left_right, end_pack_index_bottom_top,field
+    integer(c_int)      :: rank
 
     ! Assuming 1 patch per task, this will be changed
     request=0
     message_count=0
 
     cnk = 1
+    call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
 
     end_pack_index_left_right=0
     end_pack_index_bottom_top=0
@@ -397,7 +399,7 @@ CONTAINS
       ENDIF
     ENDDO
 
-    IF(chunk%chunk_neighbours(chunk_left).NE.external_face) THEN
+    IF(chunk%chunk_neighbours(chunk_left).NE.external_face .and. rank /= 6) THEN
       ! do left exchanges
       ! Find left hand tiles
       DO tile=1,tiles_per_chunk
@@ -415,7 +417,7 @@ CONTAINS
       message_count = message_count + 2
     ENDIF
 
-    IF(chunk%chunk_neighbours(chunk_right).NE.external_face) THEN
+    IF(chunk%chunk_neighbours(chunk_right).NE.external_face .and. rank /= 5) THEN
       ! do right exchanges
       DO tile=1,tiles_per_chunk
         IF(chunk%tiles(tile)%external_tile_mask(TILE_RIGHT).EQ.1) THEN
