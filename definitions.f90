@@ -186,6 +186,8 @@ MODULE definitions_module
     !TYPE(field_type):: field
     TYPE(tile_type), DIMENSION(:), ALLOCATABLE :: tiles
 
+    INTEGER         :: delta_x, delta_y
+
     INTEGER         :: x_min  &
       ,y_min  &
       ,x_max  &

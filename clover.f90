@@ -264,6 +264,10 @@ CONTAINS
 
     chunk_delta_x=chunk_x_cells/tile_x
     chunk_delta_y=chunk_y_cells/tile_y
+
+    chunk%delta_x = chunk_delta_x
+    chunk%delta_y = chunk_delta_y
+
     chunk_mod_x=MOD(chunk_x_cells,tile_x)
     chunk_mod_y=MOD(chunk_y_cells,tile_y)
 
@@ -897,6 +901,7 @@ CONTAINS
                                            total_size,                     &
                                            tag_send, tag_recv,                    &
                                            req_send, req_recv)
+    USE global_vars
     IMPLICIT NONE
 
     REAL(KIND=8), POINTER  :: left_snd_buffer(:), left_rcv_buffer(:)
@@ -904,7 +909,7 @@ CONTAINS
     integer(c_int)         :: total_size, tag_send, tag_recv, err
     integer(c_int)         :: req_send, req_recv
     integer(c_int)         :: rank, index, failed_size
-    integer(c_int)         :: i, j
+    integer(c_int)         :: i, j, flag
     integer(c_int)         :: x, x0, x1
     ! new
     ! pointer to communicate with the c library
@@ -921,16 +926,8 @@ CONTAINS
     integer, POINTER :: failed_nodes(:)
     ! pointer to the above array
     type(c_ptr) :: failed_ptr
-    
-    ! mirroring
-    do index = 1, total_size
-      left_rcv_buffer(index) = left_snd_buffer(index)
-    end do
 
-    ! default to inital value
-    do index = 1, total_size
-      left_rcv_buffer(index) = chunk%init_left_buffer(index)
-    end do
+    flag = 1
 
     ! source rank
     call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
@@ -957,22 +954,31 @@ CONTAINS
       left_chunks(num_left_chunks - j) = row * chunk_x + j
     end do
 
-    i = 1
-    do while (i <= num_left_chunks) 
-      j = 1
-      do while (j <= failed_size)
-
-        if (left_chunks(i) /= failed_nodes(j)) then
-          left_task = left_chunks(i)
-          i = num_left_chunks + 1
-          EXIT
-        endif
-
-        j = j+1
-      end do
-
-      i = i+1
+    ! mirroring
+    do index = 1, total_size
+      left_rcv_buffer(index) = left_snd_buffer(index)
     end do
+
+
+    if (global_method == 3 .or. global_method == 4) then
+      i = 1
+      do while (i <= num_left_chunks) 
+        j = 1
+        do while (j <= failed_size)
+
+          if (left_chunks(i) /= failed_nodes(j)) then
+            ! print *, "left was:", left_task, "now:", left_chunks(i)
+            left_task = left_chunks(i)
+            i = num_left_chunks + 1
+            EXIT
+          endif
+
+          j = j+1
+        end do
+
+        i = i+1
+      end do
+    endif
 
     ! print *, "source: ", rank,  "left_task :", left_task
 
@@ -1006,14 +1012,17 @@ CONTAINS
     ! x0 : the current node (source)
     ! x1 : the destination node
 
-    x = rank - 1
-    x0 = rank
-    x1 = left_task
+    if (global_method == 4) then
+      x = rank + 1
+      x0 = rank
+      x1 = left_task
 
-    if (x < x0 .and. x > x1) then
-      do index = 1, total_size
-        left_rcv_buffer(index) = left_rcv_buffer(index) + (left_rcv_buffer(index) - left_snd_buffer(index))/(x1-x0)*(x-x0)
-      end do
+      if (x > x0 .and. x < x1) then
+        do index = 1, total_size
+          left_rcv_buffer(index) = left_rcv_buffer(index) + (left_rcv_buffer(index) - left_snd_buffer(index))/(x1-x0)*(x-x0)
+        end do
+      endif
+
     endif
     
   END SUBROUTINE clover_send_recv_message_left
@@ -1783,7 +1792,7 @@ CONTAINS
                                             total_size,                    &
                                             tag_send, tag_recv,                   &
                                             req_send, req_recv)
-
+    USE global_vars
     IMPLICIT NONE
 
     REAL(KIND=8), POINTER  :: right_snd_buffer(:), right_rcv_buffer(:)
@@ -1791,7 +1800,7 @@ CONTAINS
     integer(c_int)         :: total_size, tag_send, tag_recv, err
     integer(c_int)         :: req_send, req_recv
     integer(c_int)         :: rank, index, failed_size
-    integer(c_int)         :: i, j
+    integer(c_int)         :: i, j, flag 
     integer(c_int)         :: x, x0, x1
     ! new
     ! pointer to communicate with the c library
@@ -1809,15 +1818,7 @@ CONTAINS
     ! pointer to the above array
     type(c_ptr) :: failed_ptr
 
-    ! mirroring
-    do index = 1, total_size
-      right_rcv_buffer(index) = right_snd_buffer(index)
-    end do
-
-    ! default to inital value
-    do index = 1, total_size
-      right_rcv_buffer(index) = chunk%init_right_buffer(index)
-    end do
+    flag = 1
 
     ! source rank
     call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
@@ -1844,22 +1845,31 @@ CONTAINS
       right_chunks(j - (rank - row * chunk_x)) = row * chunk_x + j
     end do
 
-    i = 1
-    do while (i <= num_right_chunks) 
-      j = 1
-      do while (j <= failed_size)
-
-        if (right_chunks(i) /= failed_nodes(j)) then
-          right_task = right_chunks(i)
-          i = num_right_chunks + 1
-          EXIT
-        endif
-
-        j = j+1
-      end do
-
-      i = i+1
+    ! mirroring
+    do index = 1, total_size
+      right_rcv_buffer(index) = right_snd_buffer(index)
     end do
+
+
+    if (global_method == 3 .or. global_method == 4) then
+      i = 1
+      do while (i <= num_right_chunks) 
+        j = 1
+        do while (j <= failed_size)
+
+          if (right_chunks(i) /= failed_nodes(j)) then
+          ! print *, "right was:", right_task, "now:", right_chunks(i)
+            right_task = right_chunks(i)
+            i = num_right_chunks + 1
+            EXIT
+          endif
+
+          j = j+1
+        end do
+
+        i = i+1
+      end do
+    endif
 
     ! print *, "source: ", rank,  "right_task :", right_task
 
@@ -1893,14 +1903,17 @@ CONTAINS
     ! x0 : the current node (source)
     ! x1 : the destination node
 
-    x = rank + 1
-    x0 = rank
-    x1 = right_task
+    if (global_method == 4) then
+      x = rank - 1
+      x0 = rank
+      x1 = right_task
 
-    if (x > x0 .and. x < x1) then
-      do index = 1, total_size
-        right_rcv_buffer(index) = right_rcv_buffer(index) + (right_rcv_buffer(index) - right_snd_buffer(index))/(x1-x0)*(x-x0)
-      end do
+      if (x < x0 .and. x > x1) then
+        do index = 1, total_size
+          right_rcv_buffer(index) = right_rcv_buffer(index) + (right_rcv_buffer(index) - right_snd_buffer(index))/(x1-x0)*(x-x0)
+        end do
+      endif
+
     endif
 
 
@@ -2665,7 +2678,7 @@ CONTAINS
                                           total_size,                  &
                                           tag_send, tag_recv,                 &
                                           req_send, req_recv)
-
+    USE global_vars
     IMPLICIT NONE
 
     REAL(KIND=8), POINTER :: top_snd_buffer(:), top_rcv_buffer(:)
@@ -2673,7 +2686,7 @@ CONTAINS
     integer(c_int)      :: total_size, tag_send, tag_recv, err
     integer(c_int)      :: req_send, req_recv
     integer(c_int)         :: rank, index, failed_size
-    integer(c_int)         :: i, j
+    integer(c_int)         :: i, j, flag
     integer(c_int)         :: x, x0, x1
     ! new
     ! pointer to communicate with the c library
@@ -2691,15 +2704,7 @@ CONTAINS
     ! pointer to the above array
     type(c_ptr) :: failed_ptr
 
-    ! mirroring
-    do index = 1, total_size
-        top_rcv_buffer(index) = top_snd_buffer(index); 
-    end do
-
-    ! default to inital value
-    do index = 1, total_size
-        top_rcv_buffer(index) = chunk%init_top_buffer(index)
-    end do
+    flag = 1
 
     ! source rank
     call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
@@ -2716,32 +2721,40 @@ CONTAINS
     ! Calculate the row (i) and column (j) of the chunk_id
     row = rank / chunk_x
     col = mod(rank, chunk_x)
-    num_top_chunks = row
+    num_top_chunks = chunk_y - row - 1
     allocate(top_chunks(num_top_chunks))
 
-    ! get a list of all lefts in order of closeness
-    j = num_top_chunks
-    do while (j > 0)
-      j = j - 1
-      top_chunks(num_top_chunks - j) = j * chunk_x + col
+    j = row
+    do while (j < chunk_y - 1)
+      j = j + 1
+      top_chunks(j - (rank / chunk_x)) = j * chunk_x  + col
     end do
 
-    i = 1
-    do while (i <= num_top_chunks) 
-      j = 1
-      do while (j <= failed_size)
+    ! mirroring
+    do index = 1, total_size
+        top_rcv_buffer(index) = top_snd_buffer(index); 
+    end do
 
-        if (top_chunks(i) /= failed_nodes(j)) then
-          top_task = top_chunks(i)
-          i = num_top_chunks + 1
-          EXIT
-        endif
+    if (global_method == 3 .or. global_method == 4) then
+      i = 1
+      do while (i <= num_top_chunks) 
+        j = 1
+        do while (j <= failed_size)
 
-        j = j+1
+          if (top_chunks(i) /= failed_nodes(j)) then
+            ! print *, "top was:", top_task, "now:", top_chunks(i)
+            top_task = top_chunks(i)
+            i = num_top_chunks + 1
+            EXIT
+          endif
+
+          j = j+1
+        end do
+
+        i = i+1
       end do
-
-      i = i+1
-    end do
+    
+    endif
 
     ! print *, "source: ", rank,  "top_task :", top_task
 
@@ -2766,6 +2779,7 @@ CONTAINS
 
     ENDIF
 
+
     ! interpolation
     ! y = y0 + (y1-y0)/(x1-x0) * (x-x0)
     ! y  : the new value on the receive buffer
@@ -2775,14 +2789,17 @@ CONTAINS
     ! x0 : the current node (source)
     ! x1 : the destination node
 
-    x = rank - 1
-    x0 = rank
-    x1 = top_task
+    if (global_method == 4) then
+      x = rank + 1
+      x0 = rank
+      x1 = top_task
 
-    if (x < x0 .and. x > x1) then
-      do index = 1, total_size
-        top_rcv_buffer(index) = top_rcv_buffer(index) + (top_rcv_buffer(index) - top_snd_buffer(index))/(x1-x0)*(x-x0)
-      end do
+      if (x > x0 .and. x < x1) then
+        do index = 1, total_size
+          top_rcv_buffer(index) = top_rcv_buffer(index) + (top_rcv_buffer(index) - top_snd_buffer(index))/(x1-x0)*(x-x0)
+        end do
+      endif
+    
     endif
 
   END SUBROUTINE clover_send_recv_message_top
@@ -3548,7 +3565,7 @@ CONTAINS
                                              total_size,                           &
                                              tag_send, tag_recv,                          &
                                              req_send, req_recv)
-
+    USE global_vars
     IMPLICIT NONE
 
     REAL(KIND=8), POINTER  :: bottom_snd_buffer(:), bottom_rcv_buffer(:)
@@ -3556,7 +3573,7 @@ CONTAINS
     integer(c_int)         :: total_size, tag_send, tag_recv, err
     integer(c_int)         :: req_send, req_recv
     integer(c_int)         :: rank, index, failed_size
-    integer(c_int)         :: i, j
+    integer(c_int)         :: i, j, flag
     integer(c_int)         :: x, x0, x1
     ! new
     ! pointer to communicate with the c library
@@ -3574,14 +3591,11 @@ CONTAINS
     ! pointer to the above array
     type(c_ptr) :: failed_ptr
 
+    flag = 1
+
     ! mirroring
     do index = 1, total_size
         bottom_rcv_buffer(index) = bottom_snd_buffer(index); 
-    end do
-
-    ! default to inital value
-    do index = 1, total_size
-        bottom_rcv_buffer(index) = chunk%init_bottom_buffer(index); 
     end do
 
     ! source rank
@@ -3599,32 +3613,34 @@ CONTAINS
     ! Calculate the row (i) and column (j) of the chunk_id
     row = rank / chunk_x
     col = mod(rank, chunk_x)
-    num_bottom_chunks = chunk_y - i - 1
+    num_bottom_chunks = row
     allocate(bottom_chunks(num_bottom_chunks))
 
-    ! get a list of all lefts in order of closeness
-    j = row
-    do while (j < chunk_y - 1)
-      j = j + 1
-      bottom_chunks(j - (rank / chunk_x)) = j * chunk_x  + col
+    j = num_bottom_chunks
+    do while (j > 0)
+      j = j - 1
+      bottom_chunks(num_bottom_chunks - j) = j * chunk_x + col
     end do
 
-    i = 1
-    do while (i <= num_bottom_chunks) 
-      j = 1
-      do while (j <= failed_size)
+    if (global_method == 3 .or. global_method == 4) then
+      i = 1
+      do while (i <= num_bottom_chunks) 
+        j = 1
+        do while (j <= failed_size)
 
-        if (bottom_chunks(i) /= failed_nodes(j)) then
-          bottom_task = bottom_chunks(i)
-          i = num_bottom_chunks + 1
-          EXIT
-        endif
+          if (bottom_chunks(i) /= failed_nodes(j)) then
+            ! print *, "bottom was:", bottom_task, "now:", bottom_chunks(i)
+            bottom_task = bottom_chunks(i)
+            i = num_bottom_chunks + 1
+            EXIT
+          endif
 
-        j = j+1
+          j = j+1
+        end do
+
+        i = i+1
       end do
-
-      i = i+1
-    end do
+    endif
 
     ! print *, "source: ", rank,  "bottom_task :", bottom_task
 
@@ -3658,14 +3674,17 @@ CONTAINS
     ! x0 : the current node (source)
     ! x1 : the destination node
 
-    x = rank + 1
-    x0 = rank
-    x1 = bottom_task
+    if (global_method == 4) then
+      x = rank - 1
+      x0 = rank
+      x1 = bottom_task
 
-    if (x > x0 .and. x < x1) then
-      do index = 1, total_size
-        bottom_rcv_buffer(index) = bottom_rcv_buffer(index) + (bottom_rcv_buffer(index) - bottom_snd_buffer(index))/(x1-x0)*(x-x0)
-      end do
+      if (x < x0 .and. x > x1) then
+        do index = 1, total_size
+          bottom_rcv_buffer(index) = bottom_rcv_buffer(index) + (bottom_rcv_buffer(index) - bottom_snd_buffer(index))/(x1-x0)*(x-x0)
+        end do
+      endif
+
     endif
 
   END SUBROUTINE clover_send_recv_message_bottom

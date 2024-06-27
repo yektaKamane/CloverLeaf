@@ -21,15 +21,16 @@ SUBROUTINE write_my_energy(current_timestep)
     call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
 
     ! Set the file name to include the rank and unit number
-    write(filename, '(A, "array_data_", I0, "_", I0, ".txt")') &
+    write(filename, '(A, "array_data_", I0, "_", I0, ".csv")') &
                         trim(output_dir), rank, current_timestep
     unit_number = 10 + rank
 
     ! Open the file for writing
     open(unit=unit_number, file=filename, status='unknown', action='write')
 
-    nx = 480
-    ny = 480
+    nx = chunk%delta_x
+    ny = chunk%delta_y
+
     ! Write the array elements to the file
     do i = 1, nx
         do j = 1, ny
@@ -48,15 +49,3 @@ SUBROUTINE write_my_energy(current_timestep)
 
 END SUBROUTINE
 
-
-SUBROUTINE save_initial_state(buffer_src, buffer_dst, size)
-
-    integer               :: size, i
-    REAL(KIND=8), POINTER :: buffer_src(:), buffer_dst(:)
-
-    do i=1, size
-        buffer_dst(i) = buffer_src(i)
-        print *, buffer_dst(i)
-    end do
-
-END SUBROUTINE

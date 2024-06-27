@@ -20,6 +20,11 @@
 !>  @details Controls the top level cycle, invoking all the drivers and checks
 !>  for outputs and completion.
 
+module global_vars
+    implicit none
+    integer :: global_method
+end module global_vars
+
 SUBROUTINE hydro
 
     USE clover_module
@@ -31,6 +36,7 @@ SUBROUTINE hydro
     USE advection_module
     USE reset_field_module
     USE mpi_interface
+    USE global_vars
 
     IMPLICIT NONE
 
@@ -44,42 +50,63 @@ SUBROUTINE hydro
 
     integer(c_int) :: rank, err, failed_size, i
     integer(c_int) :: y_size, x_size
-
+    
+    integer :: nargs, method, failed_rank
+    character(len=100) :: arg
+    
     y_size = 10*2*(chunk%y_max+5)
     x_size = 10*2*(chunk%x_max+5)
 
-    do i=1, y_size
-        chunk%init_left_buffer(i)  = chunk%left_snd_buffer(i)
-        chunk%init_right_buffer(i) = chunk%right_snd_buffer(i)
-    end do
+    ! get the number of command line arguments
+    nargs = command_argument_count()
 
-    do i=1, x_size
-        chunk%init_bottom_buffer(i)  = chunk%bottom_snd_buffer(i)
-        chunk%init_top_buffer(i) = chunk%top_snd_buffer(i)
-    end do
+    if (nargs >= 1) then
+        call get_command_argument(1, arg)
+        read(arg, '(I10)', iostat=err) method
+        if (nargs >= 2) then
+            call get_command_argument(2, arg)
+            read(arg, '(I10)', iostat=err) failed_rank
+
+        else 
+            failed_rank = -1
+        endif
+    else 
+        method = 2
+    endif
+
+    global_method = method
 
     timerstart = timer()
+
 
     DO
         step_time = timer()
 
         step = step + 1
 
+        ! if (step == 1) then
+        !     do i=1, y_size
+        !         chunk%init_left_buffer(i)  = 1.0
+        !         chunk%init_right_buffer(i) = 1.0
+        !     end do
+
+        !     do i=1, x_size
+        !         chunk%init_bottom_buffer(i)  = 1.0
+        !         chunk%init_top_buffer(i) = 1.0
+        !     end do 
+
+        ! endif
+
+        ! IF (STEP == 1 .or. STEP == 120) THEN
         CALL write_my_energy(step)
-
-        ! IF (step == 1) THEN 
-        !     call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
-        !     IF (rank == 1) THEN
-        !         call raise_sigint_c()
-        !     ENDIF
         ! ENDIF
 
-        ! IF (step == 4) THEN 
-        !     call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
-        !     IF (rank == 2) THEN
-        !         call raise_sigint_c()
-        !     ENDIF
-        ! ENDIF
+        IF (step == 2) THEN 
+            call my_MPI_Comm_rank(MPI_COMM_WORLD, rank, err)
+            IF (rank == failed_rank) THEN
+                call raise_sigint_c()
+            ENDIF
+        ENDIF
 
         ! there are 6 calls to update_halo
 

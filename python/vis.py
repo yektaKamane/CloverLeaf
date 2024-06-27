@@ -26,11 +26,12 @@ def find_highest_j(file_pattern, i):
 
 def create_grid(j, file_pattern):
     arrays = []
-    directory = '../output/'
-    i_values = sorted(set(int(filename.split('_')[2]) for filename in os.listdir(directory) if filename.startswith(file_pattern) and filename.endswith(f'_{j}.csv')))
-    
+    directory = '../output'
+    i_values = list(range(16))
+
     for i in i_values:
         file_name = f'{directory}/{file_pattern}_{i}_{j}.csv'
+        
         if not os.path.exists(file_name):
             highest_j = find_highest_j(file_pattern, i)
             if highest_j is not None:
@@ -43,7 +44,8 @@ def create_grid(j, file_pattern):
             print(f"File {file_name} not found or does not exist.")
     
     # Ensure arrays has exactly 4 elements, using None for missing files
-    while len(arrays) < 4:
+    while len(arrays) < 16:
+        
         highest_j = find_highest_j(file_pattern, i_values[-1])  # Use highest j available for last i
         if highest_j is not None:
             file_name = f'{directory}/{file_pattern}_{i_values[-1]}_{highest_j}.csv'
@@ -51,19 +53,23 @@ def create_grid(j, file_pattern):
                 array = pd.read_csv(file_name).values
                 arrays.append(array)
             else:
+                print("none found")
                 arrays.append(None)
         else:
+            print("none found")
             arrays.append(None)
     
     # Filter out None values and concatenate existing arrays
     arrays = [arr for arr in arrays if arr is not None]
     
-    if len(arrays) < 4:
+    if len(arrays) < 16:
         return None
-    
-    left_column = np.vstack((arrays[0], arrays[1]))
-    right_column = np.vstack((arrays[2], arrays[3]))
-    grid = np.hstack((left_column, right_column))
+
+    column1 = np.vstack((arrays[0], arrays[1], arrays[2], arrays[3]))
+    column2 = np.vstack((arrays[4], arrays[5], arrays[6], arrays[7]))
+    column3 = np.vstack((arrays[8], arrays[9], arrays[10], arrays[11]))
+    column4 = np.vstack((arrays[12], arrays[13], arrays[14], arrays[15]))
+    grid = np.hstack((column1, column2, column3, column4))
     
     return grid
 
@@ -80,8 +86,12 @@ def gather_grids(file_pattern):
 
 def visualize_heatmap_anim(ax, array, vmin=0, vmax=3):
     cax = ax.imshow(array, cmap='coolwarm', aspect='auto', vmin=vmin, vmax=vmax)
+    ax.axhline(y=array.shape[0] // 4, color='white', linestyle='--')
     ax.axhline(y=array.shape[0] // 2, color='white', linestyle='--')
+    ax.axhline(y=array.shape[0]  * 3 // 4, color='white', linestyle='--')
+    ax.axvline(x=array.shape[1] // 4, color='white', linestyle='--')
     ax.axvline(x=array.shape[1] // 2, color='white', linestyle='--')
+    ax.axvline(x=array.shape[1] * 3 // 4, color='white', linestyle='--')
     return cax
 
 def animate_heatmaps(arrays, interval=500, save_as_gif=False, gif_name='heatmap_animation.gif'):
@@ -90,9 +100,9 @@ def animate_heatmaps(arrays, interval=500, save_as_gif=False, gif_name='heatmap_
     def update(frame):
         ax.clear()
         cax = visualize_heatmap_anim(ax, arrays[frame])
-        ax.set_title('Heat Map of the 2D Array')
-        ax.set_xlabel('X-axis')
-        ax.set_ylabel('Y-axis')
+        # ax.set_title('Th')
+        ax.set_xlabel('X')
+        ax.set_ylabel('Y')
     
     # Create the animation
     ani = FuncAnimation(fig, update, frames=len(arrays), interval=interval, repeat=False)
@@ -108,4 +118,4 @@ def animate_heatmaps(arrays, interval=500, save_as_gif=False, gif_name='heatmap_
 if __name__ == "__main__":
     file_pattern = 'array_data'
     grids = gather_grids(file_pattern)
-    animate_heatmaps(grids, interval=50, save_as_gif=True, gif_name='heatmap_new.gif')
+    animate_heatmaps(grids[1:], interval=50, save_as_gif=True, gif_name='heatmap_new.gif')
